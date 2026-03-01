@@ -3,6 +3,6 @@
 
 int precedence(char op);
 void shunting_yard(char* input, char* output);
-void add_explicit_concat(char* input, char* output);
+void add_explicit_concat(const char* input, char* output);
 
 #endif

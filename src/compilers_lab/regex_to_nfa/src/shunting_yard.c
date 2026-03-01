@@ -55,7 +55,7 @@ bool needs_concat_left(char c) {
 }
 
 // Preprocess the input to add explicit concatenation operators
-void add_explicit_concat(char* input, char* output) {
+void add_explicit_concat(const char* input, char* output) {
     int out_idx = 0;
     int len = strlen(input);
 
