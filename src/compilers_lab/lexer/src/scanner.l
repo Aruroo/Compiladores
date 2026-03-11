@@ -48,6 +48,7 @@ LOGICAL_OR (||)
 "return" {return TOK_KW_RETURN;}
 "break" {return TOK_KW_BREAK;}
 "continue" {return TOK_KW_CONTINUE;}
+
 "++" {return TOK_INC;}
 "--" {return TOK_DEC;}
 "+=" {return TOK_PLUS_ASSIGN;}
@@ -62,7 +63,24 @@ LOGICAL_OR (||)
 "&&" {return TOK_AND;}
 "||" {return TOK_OR;}
 
+"=" {return TOK_ASSIGN;}
+"<" {return TOK_LT;}
+">" {return TOK_GT;}
+"!" {return TOK_NOT;}
+"+" {return TOK_PLUS;}
+"-" {return TOK_MINUS;}
+"*" {return TOK_MUL;}
+"/" {return TOK_DIV;}
+"%" {return TOK_MOD;}
 
+
+/*
+SECCIÓN 8: Palabras reservadas
+- Agrega reglas exactas para:
+	int, float, double, char, void,
+	if, else, while, for, return, break, continue
+- Cada una debe retornar su token TOK_KW_* correspondiente.
+*/
 
 /*
 SECCIÓN 9: Operadores compuestos (siempre antes de los simples)
