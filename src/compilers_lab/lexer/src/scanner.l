@@ -8,7 +8,17 @@
 
 ID [a-zA-Z_][a-zA-Z0-9_]*
 INT [0-9]+
-FLOAT {INT}\.{INT}
+FLOAT ({INT}\.{INT})|({INT}\.{INT})([eE][+-]?{INT})|{INT}([eE][+-]?{INT})
+WS [ \t\r\n]+
+
+%%
+
+"/*" {BEGIN(COMMENT);}
+<COMMENT>"*/" {BEGIN(INITIAL);}
+<COMMENT>\n {}
+<COMMENT>. {}
+<COMMENT><<EOF>> {return TOK_ERROR;}
+"//"[^\n]* {}
 
 /*
 *
