@@ -8,65 +8,47 @@
 
 ID [a-zA-Z_][a-zA-Z0-9_]*
 INT [0-9]+
-FLOAT {INT}\.{INT}
+FLOAT ({INT}\.{INT})|({INT}\.{INT}[eE][+-]?{INT})|({INT}[eE][+-]?{INT})
+WS [ \t\r\n]+
+INCREMENT (++)
+DECREMENT (--)
+PLUS_ASSIGN (\+=)
+MINUS_ASSIGN (-=)
+MUL_ASSIGN (\*=)
+DIVIDE_ASSIGN (/=)
+MOD_ASSIGN (%=)
+EQUAL (==)
+NOT_EQUAL (!=)
+LESS_EQUAL (<=)
+GREATER_EQUAL (>=)
+LOGICAL_AND (&&)
+LOGICAL_OR (||)
+%%
 
-/*
-*
-Plantilla guiada para el scanner de Flex.
+"/*" {BEGIN(COMMENT);}
+<COMMENT>"*/" {BEGIN(INITIAL);}
+<COMMENT>\n {}
+<COMMENT>. {}
+<COMMENT><<EOF>> {return TOK_ERROR;}
+"//"[^\n]* {}
 
-Objetivo para el alumnado:
-1) Completar cada bloque en este mismo orden.
-2) Mantener los nombres de macros y tokens tal cual se indican.
-3) Al finalizar, el archivo debe comportarse como el scanner final esperado.
-*/
-
-/*
-SECCIÓN 1: Opciones globales de Flex
-- Agrega la opción para NO requerir yywrap.
-- Agrega la opción para llevar conteo automático de líneas.
-
-Pista: la línea esperada usa dos opciones en una sola directiva %option.
-*/
-
-/*
-SECCIÓN 2: Código C embebido
-- Abre el bloque %{ ... %}.
-- Incluye el header del scanner con #include "scanner.h".
-- Cierra el bloque.
-*/
-
-/*
-SECCIÓN 3: Estados léxicos
-- Declara un estado exclusivo llamado COMMENT para comentarios de bloque.
-*/
-
-/*
-SECCIÓN 4: Macros (definiciones de regex reutilizables)
-- ID: identificadores tipo C (empieza con letra o _, luego letras/dígitos/_).
-- INT: uno o más dígitos.
-- FLOAT: número con punto opcionalmente con exponente, o entero con exponente.
-- WS: espacios en blanco (espacio, tab, retorno de carro y salto de línea).
-*/
-
-/*
-SECCIÓN 5: Inicio de reglas
-- Coloca el separador %% para comenzar reglas.
-*/
-
-/*
-SECCIÓN 6: Comentarios
-- Regla para iniciar comentario de bloque al leer "/*" (cambiar a estado COMMENT).
-- En COMMENT, regla para "*/" (volver a INITIAL).
-- En COMMENT, consumir \n sin acción (el conteo de línea se actualiza solo).
-- En COMMENT, consumir cualquier otro carácter y descartarlo.
-- En COMMENT, si llega EOF sin cerrar, devolver TOK_ERROR.
-- Regla para comentario de línea: "//" hasta antes de \n, sin devolver token.
-*/
-
-/*
-SECCIÓN 7: Espacios en blanco
-- Regla usando {WS} para ignorar whitespace.
-*/
+{WS} {}
+{FLOAT} {return TOK_FLOAT_LITERAL;}
+{INT} {return TOK_INT_LITERAL;}
+{ID} {return TOK_IDENTIFIER;}
+"++" {return TOK_INC;}
+"--" {return TOK_DEC;}
+"+=" {return TOK_PLUS_ASSIGN;}
+"-=" {return TOK_MINUS_ASSIGN;}
+"*=" {return TOK_MUL_ASSIGN;}
+"/=" {return TOK_DIV_ASSIGN;}
+"%=" {return TOK_MOD_ASSIGN;}
+"==" {return TOK_EQ;}
+"!=" {return TOK_NEQ;}
+"<=" {return TOK_LE;}
+">=" {return TOK_GE;}
+"&&" {return TOK_AND;}
+"||" {return TOK_OR;}
 
 /*
 SECCIÓN 8: Palabras reservadas
@@ -115,3 +97,4 @@ SECCIÓN 13: Fin de archivo y error genérico
 SECCIÓN 14: Cierre de reglas
 - Coloca el separador %% final.
 */
+%%
