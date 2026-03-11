@@ -36,6 +36,7 @@ LOGICAL_OR (||)
 {FLOAT} {return TOK_FLOAT_LITERAL;}
 {INT} {return TOK_INT_LITERAL;}
 {ID} {return TOK_IDENTIFIER;}
+
 "int" {return TOK_KW_INT;}
 "float" {return TOK_KW_FLOAT;}
 "double" {return TOK_KW_DOUBLE;}
