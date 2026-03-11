@@ -8,9 +8,21 @@
 
 ID [a-zA-Z_][a-zA-Z0-9_]*
 INT [0-9]+
-FLOAT ({INT}\.{INT})|({INT}\.{INT})([eE][+-]?{INT})|{INT}([eE][+-]?{INT})
+FLOAT ({INT}\.{INT})|({INT}\.{INT}[eE][+-]?{INT})|({INT}[eE][+-]?{INT})
 WS [ \t\r\n]+
-
+INCREMENT (++)
+DECREMENT (--)
+PLUS_ASSIGN (\+=)
+MINUS_ASSIGN (-=)
+MUL_ASSIGN (\*=)
+DIVIDE_ASSIGN (/=)
+MOD_ASSIGN (%=)
+EQUAL (==)
+NOT_EQUAL (!=)
+LESS_EQUAL (<=)
+GREATER_EQUAL (>=)
+LOGICAL_AND (&&)
+LOGICAL_OR (||)
 %%
 
 "/*" {BEGIN(COMMENT);}
@@ -20,7 +32,23 @@ WS [ \t\r\n]+
 <COMMENT><<EOF>> {return TOK_ERROR;}
 "//"[^\n]* {}
 
-
+{WS} {}
+{FLOAT} {return TOK_FLOAT_LITERAL;}
+{INT} {return TOK_INT_LITERAL;}
+{ID} {return TOK_IDENTIFIER;}
+"++" {return TOK_INC;}
+"--" {return TOK_DEC;}
+"+=" {return TOK_PLUS_ASSIGN;}
+"-=" {return TOK_MINUS_ASSIGN;}
+"*=" {return TOK_MUL_ASSIGN;}
+"/=" {return TOK_DIV_ASSIGN;}
+"%=" {return TOK_MOD_ASSIGN;}
+"==" {return TOK_EQ;}
+"!=" {return TOK_NEQ;}
+"<=" {return TOK_LE;}
+">=" {return TOK_GE;}
+"&&" {return TOK_AND;}
+"||" {return TOK_OR;}
 
 /*
 SECCIÓN 8: Palabras reservadas
