@@ -10,19 +10,6 @@ ID [a-zA-Z_][a-zA-Z0-9_]*
 INT [0-9]+
 FLOAT ({INT}\.{INT})|({INT}\.{INT}[eE][+-]?{INT})|({INT}[eE][+-]?{INT})
 WS [ \t\r\n]+
-INCREMENT (++)
-DECREMENT (--)
-PLUS_ASSIGN (\+=)
-MINUS_ASSIGN (-=)
-MUL_ASSIGN (\*=)
-DIVIDE_ASSIGN (/=)
-MOD_ASSIGN (%=)
-EQUAL (==)
-NOT_EQUAL (!=)
-LESS_EQUAL (<=)
-GREATER_EQUAL (>=)
-LOGICAL_AND (&&)
-LOGICAL_OR (||)
 %%
 
 "/*" {BEGIN(COMMENT);}
@@ -35,7 +22,6 @@ LOGICAL_OR (||)
 {WS} {}
 {FLOAT} {return TOK_FLOAT_LITERAL;}
 {INT} {return TOK_INT_LITERAL;}
-{ID} {return TOK_IDENTIFIER;}
 
 "int" {return TOK_KW_INT;}
 "float" {return TOK_KW_FLOAT;}
@@ -49,6 +35,8 @@ LOGICAL_OR (||)
 "return" {return TOK_KW_RETURN;}
 "break" {return TOK_KW_BREAK;}
 "continue" {return TOK_KW_CONTINUE;}
+
+{ID} {return TOK_IDENTIFIER;}
 
 "++" {return TOK_INC;}
 "--" {return TOK_DEC;}
@@ -74,7 +62,17 @@ LOGICAL_OR (||)
 "/" {return TOK_DIV;}
 "%" {return TOK_MOD;}
 
+"(" {return TOK_LPAREN;} 
+")" {return TOK_RPAREN;}
+"{" {return TOK_LBRACE;}
+"}" {return TOK_RBRACE;}
+"[" {return TOK_LBRACKET;}
+"]" {return TOK_RBRACKET;}
+"," {return TOK_COMMA;}
+";" {return TOK_SEMICOLON;}
 
+
+<<EOF>> {return TOK_EOF;}
 /*
 SECCIÓN 8: Palabras reservadas
 - Agrega reglas exactas para:
@@ -122,4 +120,6 @@ SECCIÓN 13: Fin de archivo y error genérico
 SECCIÓN 14: Cierre de reglas
 - Coloca el separador %% final.
 */
+
+. {return TOK_ERROR;}
 %%
