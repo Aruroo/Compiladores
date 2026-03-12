@@ -20,8 +20,6 @@ WS [ \t\r\n]+
 "//"[^\n]* {}
 
 {WS} {}
-{FLOAT} {return TOK_FLOAT_LITERAL;}
-{INT} {return TOK_INT_LITERAL;}
 
 "int" {return TOK_KW_INT;}
 "float" {return TOK_KW_FLOAT;}
@@ -35,8 +33,6 @@ WS [ \t\r\n]+
 "return" {return TOK_KW_RETURN;}
 "break" {return TOK_KW_BREAK;}
 "continue" {return TOK_KW_CONTINUE;}
-
-{ID} {return TOK_IDENTIFIER;}
 
 "++" {return TOK_INC;}
 "--" {return TOK_DEC;}
@@ -71,27 +67,14 @@ WS [ \t\r\n]+
 "," {return TOK_COMMA;}
 ";" {return TOK_SEMICOLON;}
 
+{FLOAT} {return TOK_FLOAT_LITERAL;}
+{INT} {return TOK_INT_LITERAL;}
+'([^'\\\n]|\\.)' {return TOK_CHAR_LITERAL;}
+\"([^\"\\\n]|\\.)*\" {return TOK_STRING_LITERAL;}
+{ID} {return TOK_IDENTIFIER;}
+
 
 <<EOF>> {return TOK_EOF;}
-/*
-SECCIÓN 8: Palabras reservadas
-- Agrega reglas exactas para:
-	int, float, double, char, void,
-	if, else, while, for, return, break, continue
-- Cada una debe retornar su token TOK_KW_* correspondiente.
-*/
-
-/*
-SECCIÓN 9: Operadores compuestos (siempre antes de los simples)
-- ++, --, +=, -=, *=, /=, %=, ==, !=, <=, >=, &&, ||
-- Devuelven los TOK_* correspondientes.
-*/
-
-/*
-SECCIÓN 10: Operadores simples
-- =, <, >, !, +, -, *, /, %
-- Devuelven los TOK_* correspondientes.
-*/
 
 /*
 SECCIÓN 11: Delimitadores
