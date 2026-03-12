@@ -71,6 +71,8 @@ WS [ \t\r\n]+
 "," {return TOK_COMMA;}
 ";" {return TOK_SEMICOLON;}
 
+
+<<EOF>> {return TOK_EOF;}
 /*
 SECCIÓN 8: Palabras reservadas
 - Agrega reglas exactas para:
