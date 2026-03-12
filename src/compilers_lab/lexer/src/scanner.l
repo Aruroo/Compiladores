@@ -22,7 +22,6 @@ WS [ \t\r\n]+
 {WS} {}
 {FLOAT} {return TOK_FLOAT_LITERAL;}
 {INT} {return TOK_INT_LITERAL;}
-{ID} {return TOK_IDENTIFIER;}
 
 "int" {return TOK_KW_INT;}
 "float" {return TOK_KW_FLOAT;}
@@ -36,6 +35,8 @@ WS [ \t\r\n]+
 "return" {return TOK_KW_RETURN;}
 "break" {return TOK_KW_BREAK;}
 "continue" {return TOK_KW_CONTINUE;}
+
+{ID} {return TOK_IDENTIFIER;}
 
 "++" {return TOK_INC;}
 "--" {return TOK_DEC;}
