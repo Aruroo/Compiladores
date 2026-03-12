@@ -73,36 +73,6 @@ WS [ \t\r\n]+
 \"([^\"\\\n]|\\.)*\" {return TOK_STRING_LITERAL;}
 {ID} {return TOK_IDENTIFIER;}
 
-
 <<EOF>> {return TOK_EOF;}
-
-/*
-SECCIÓN 11: Delimitadores
-- (, ), {, }, [, ], ,, ;
-- Devuelven los TOK_* correspondientes.
-*/
-
-/*
-SECCIÓN 12: Literales e identificadores (orden importante)
-- Primero FLOAT -> TOK_FLOAT_LITERAL.
-- Luego INT -> TOK_INT_LITERAL.
-- Luego literal de char (admitiendo escapes) -> TOK_CHAR_LITERAL.
-- Luego literal de string (admitiendo escapes) -> TOK_STRING_LITERAL.
-- Finalmente ID -> TOK_IDENTIFIER.
-
-Nota: si pones ID antes de keywords, las keywords se reconocerán como identificadores.
-*/
-
-/*
-SECCIÓN 13: Fin de archivo y error genérico
-- Regla <<EOF>> que retorna TOK_EOF.
-- Regla final con . que retorna TOK_ERROR para cualquier carácter no reconocido.
-*/
-
-/*
-SECCIÓN 14: Cierre de reglas
-- Coloca el separador %% final.
-*/
-
 . {return TOK_ERROR;}
 %%
