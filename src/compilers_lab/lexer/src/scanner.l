@@ -61,6 +61,14 @@ WS [ \t\r\n]+
 "/" {return TOK_DIV;}
 "%" {return TOK_MOD;}
 
+"(" {return TOK_LPAREN;} 
+")" {return TOK_RPAREN;}
+"{" {return TOK_LBRACE;}
+"}" {return TOK_RBRACE;}
+"[" {return TOK_LBRACKET;}
+"]" {return TOK_RBRACKET;}
+"," {return TOK_COMMA;}
+";" {return TOK_SEMICOLON;}
 
 /*
 SECCIÓN 8: Palabras reservadas
@@ -109,4 +117,6 @@ SECCIÓN 13: Fin de archivo y error genérico
 SECCIÓN 14: Cierre de reglas
 - Coloca el separador %% final.
 */
+
+. {return TOK_ERROR;}
 %%
