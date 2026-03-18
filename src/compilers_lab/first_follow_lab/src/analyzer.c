@@ -1,4 +1,5 @@
 #include "analyzer.h"
+#include "grammar.h"
 
 /**
  * @brief Finds a terminal identifier by terminal name.
@@ -8,8 +9,19 @@
  */
 static int find_terminal_id(const grammar *g, const char *name)
 {
-	// TODO: Validate inputs and search terminal list to return the matching terminal id.
+	if (g == NULL || name == NULL) {
+		return -1; // Invalid input
+	}
+
+	for (int i = 0; i < g->num_terminals; i++) {
+        if (strcmp(g->terminals[i].symbol, name) == 0) {
+            return i; // Terminal found, return its id
+        }
+    }
+
+    return -1; // Terminal not found
 }
+
 
 /**
  * @brief Appends one symbol to a dynamically sized symbol array.
