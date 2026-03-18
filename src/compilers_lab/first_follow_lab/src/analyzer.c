@@ -33,7 +33,29 @@ static int find_terminal_id(const grammar *g, const char *name)
  */
 static bool add_symbol_to_array(symbol **arr, int *count, const char *text, bool is_terminal)
 {
-	// TODO: Reallocate the array, duplicate symbol text, fill metadata, and increase count.
+	// Reallocating the array to hold one more symbol
+	symbol *tmp = realloc(*arr, (*count + 1) * sizeof(symbol));
+	if (tmp == NULL) {
+		return false;  
+	}
+
+	*arr = tmp;
+
+	// Duplicating the symbol text
+	char *symbol_text = strdup(text);
+	if (symbol_text == NULL) {
+		*arr = realloc(*arr, (*count) * sizeof(symbol)); // revert to previous size on failure
+		return false;  
+	}
+
+	// Filling the symbol metadata
+	(*arr)[*count].symbol = symbol_text;
+	(*arr)[*count].symbol_length = strlen(text);
+	(*arr)[*count].is_terminal = is_terminal;
+
+	(*count)++; // Incrementing the count of symbols
+
+	return true;
 }
 
 /**
