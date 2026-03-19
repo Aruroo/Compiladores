@@ -133,23 +133,29 @@ static bool compute_first_tables(const grammar *g, bool **first_table, bool **nu
 								changed = true;
 							}
 						}
+						all_nullable =false;
+						break;
 					}
 					if (!(*nullable)[next_no_term_id]) {
+						all_nullable = false;	
 						break; // Stop if the non-terminal is not nullable
 					}
 				}
+			}
 			
-				if (all_nullable) {
-					if (!(*nullable)[no_term_id]) {
-						(*nullable)[no_term_id] = true;
-						changed = true;
-					}
-				}
+			// [nullable] If all symbols were nullable, X is also nullable
+			if (all_nullable && !(*nullable)[no_term_id]) {
+				(*nullable)[no_term_id] = true;
+				changed = true;
+			}
 		}
+
 	}
 
 	return true;
 }
+
+
 
 /**
  * @brief Builds FOLLOW table for all non-terminals.
