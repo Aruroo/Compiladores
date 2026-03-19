@@ -142,7 +142,10 @@ int compute_follow_for_non_terminal(const grammar *g, int non_terminal_id, symbo
  */
 int compute_first_for_start_symbol(const grammar *g, symbol **out_first)
 {
-	// TODO: Delegate FIRST computation to the generic non-terminal function using the start-symbol index.
+	if(g == NULL || g->num_non_terminals <= 0) {
+		return 0;
+	}
+	compute_first_for_non_terminal(g,0,out_first);
 }
 
 /**
@@ -153,7 +156,10 @@ int compute_first_for_start_symbol(const grammar *g, symbol **out_first)
  */
 int compute_follow_for_start_symbol(const grammar *g, symbol **out_follow)
 {
-	// TODO: Delegate FOLLOW computation to the generic non-terminal function using the start-symbol index.
+	if(g == NULL || g->num_non_terminals <= 0) {
+		return 0;
+	}
+	compute_follow_for_non_terminal(g, 0,out_follow);
 }
 
 /**
