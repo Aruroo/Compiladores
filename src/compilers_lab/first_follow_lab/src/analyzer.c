@@ -68,7 +68,37 @@ static bool add_symbol_to_array(symbol **arr, int *count, const char *text, bool
  */
 static bool compute_first_tables(const grammar *g, bool **first_table, bool **nullable, int *epsilon_id)
 {
-	// TODO: Allocate FIRST/nullable tables and compute them with fixed-point propagation over productions.
+	if (g == NULL || first_table == NULL || nullable == NULL || epsilon_id == NULL){
+		return false; 
+	}
+
+	*first_table = NULL;
+	*nullable = NULL;
+	*epsilon_id = -1;
+   
+	// Allocating the FIRST table (non-terminals x terminals)
+	*first_table = calloc(g->num_non_terminals * g->num_terminals, sizeof(bool));
+	if (*first_table == NULL) {
+		return false; 
+	}
+
+	// Allocating the nullable array (one bool per non-terminal)
+	*nullable = calloc(g->num_non_terminals, sizeof(bool));
+	if (*nullable == NULL) {
+		free(*first_table);
+		return false; 
+	}
+
+	*epsilon_id = find_terminal_id(g, "epsilon");
+
+
+	for (int i = 0; i < g->num_productions; i++) {
+		production *prod = &g->productions[i];
+
+	}
+
+
+	return true;
 }
 
 /**
