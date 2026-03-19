@@ -91,12 +91,62 @@ static bool compute_first_tables(const grammar *g, bool **first_table, bool **nu
 
 	*epsilon_id = find_terminal_id(g, "epsilon");
 
+	bool changed = true;
+	while (changed) {
+		changed = false;
 
-	for (int i = 0; i < g->num_productions; i++) {
-		production *prod = &g->productions[i];
+		for (int i = 0; i < g->num_productions; i++) {
+			production *prod = &g->productions[i];
+			int no_term_id = prod->non_terminal_id; 
+		
+            // [nullable] Check if the production is of the form X -> epsilon
+            if (prod->production_length == 1 && prod->production_symbol_ids[0] == *epsilon_id) {
+                if (!(*nullable)[no_term_id]) {
+                    (*nullable)[no_term_id] = true;
+                    changed = true;
+                }
+                continue;
+            }
 
+			/* [FIRST] CHeck each symbol in the production body until we find a non-nullable non-terminal
+			   (X -> Y1 Y2 ... Yk) means FIRST(X) includes FIRST(Y1), and if Y1 is nullable, also includes FIRST(Y2), etc. */
+			
+			bool all_nullable = true;
+
+			for (int j = 0; j < prod->production_length; j++) {
+				int sym_id = prod->production_symbol_ids[j];
+				if (sym_id < g->num_terminals) {
+					// Symbol is a terminal, add it to FIRST(X)
+					int term_id = sym_id;
+					if (!(*first_table)[no_term_id * g->num_terminals + term_id]) {
+						(*first_table)[no_term_id * g->num_terminals + term_id] = true;
+						changed = true;
+					}
+					break; 
+				} else {
+					// Symbol is a non-terminal, add its FIRST set to FIRST(X)
+					int next_no_term_id = sym_id - g->num_terminals;
+					for (int t = 0; t < g->num_terminals; t++) {
+						if ((*first_table)[next_no_term_id * g->num_terminals + t]) {
+							if (!(*first_table)[no_term_id * g->num_terminals + t]) {
+								(*first_table)[no_term_id * g->num_terminals + t] = true;
+								changed = true;
+							}
+						}
+					}
+					if (!(*nullable)[next_no_term_id]) {
+						break; // Stop if the non-terminal is not nullable
+					}
+				}
+			
+				if (all_nullable) {
+					if (!(*nullable)[no_term_id]) {
+						(*nullable)[no_term_id] = true;
+						changed = true;
+					}
+				}
+		}
 	}
-
 
 	return true;
 }
