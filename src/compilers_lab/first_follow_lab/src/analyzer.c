@@ -183,7 +183,33 @@ int compute_first_for_non_terminal(const grammar *g, int non_terminal_id, symbol
  */
 int compute_follow_for_non_terminal(const grammar *g, int non_terminal_id, symbol **out_follow)
 {
-	// TODO: Validate inputs, compute FIRST/nullable and FOLLOW tables, then collect FOLLOW for the target non-terminal.
+    if (g == NULL || non_terminal_id < 0 || non_terminal_id >= g->num_non_terminals || out_follow == NULL) {
+        return 0;
+    }
+
+    bool *first_table = NULL;
+    bool *nullable = NULL;
+    bool *follow_table = NULL;
+    int epsilon_id;
+    int follow_cols;
+    
+    if (!compute_first_tables(g, &first_table, &nullable, &epsilon_id)) {
+        return 0;
+    }
+
+    if (!compute_follow_table(g, first_table, nullable, epsilon_id, &follow_table, &follow_cols)) {
+        free(first_table);
+        free(nullable);
+        return 0;
+    }
+    
+    int count = collect_follow_for_non_terminal(g, non_terminal_id, follow_table, follow_cols, out_follow);
+
+    free(first_table);
+    free(nullable);
+    free(follow_table);
+
+    return count;
 }
 
 /**
