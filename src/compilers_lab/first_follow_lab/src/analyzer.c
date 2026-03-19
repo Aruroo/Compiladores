@@ -116,7 +116,7 @@ static bool compute_first_tables(const grammar *g, bool **first_table, bool **nu
 			for (int j = 0; j < prod->production_length; j++) {
 				int sym_id = prod->production_symbol_ids[j];
 				if (sym_id < g->num_terminals) {
-					// Symbol is a terminal, add it to FIRST(X)
+					// [FIRST] Symbol is a terminal, add it to FIRST(X)
 					int term_id = sym_id;
 					if (!(*first_table)[no_term_id * g->num_terminals + term_id]) {
 						(*first_table)[no_term_id * g->num_terminals + term_id] = true;
@@ -124,7 +124,7 @@ static bool compute_first_tables(const grammar *g, bool **first_table, bool **nu
 					}
 					break; 
 				} else {
-					// Symbol is a non-terminal, add its FIRST set to FIRST(X)
+					// [FIRST] Symbol is a non-terminal, add its FIRST set to FIRST(X)
 					int next_no_term_id = sym_id - g->num_terminals;
 					for (int t = 0; t < g->num_terminals; t++) {
 						if ((*first_table)[next_no_term_id * g->num_terminals + t]) {
@@ -196,7 +196,39 @@ static int collect_first_for_non_terminal(
 	int epsilon_id,
 	symbol **out_first)
 {
-	// TODO: Read one FIRST row, append terminal symbols, and include epsilon when nullable.
+	if (g == NULL || first_table == NULL || nullable == NULL || out_first == NULL) {
+		return 0;
+	}
+
+	if (non_terminal_id < 0 || non_terminal_id >= g->num_non_terminals) {
+		return 0; 
+	}
+
+	*out_first = NULL;
+	int symbol_count = 0;
+
+	// Read the FIRST row for the non-terminal
+	for (int t = 0; t < g->num_terminals; t++) {
+		if (first_table[non_terminal_id * g->num_terminals + t]) {
+			if (!add_symbol_to_array(out_first, &symbol_count, g->terminals[t].symbol, true)) {
+				free_symbol_array(*out_first, symbol_count);
+				*out_first = NULL;
+				return 0; 
+			}
+		}
+	}
+
+	// If nullable, also include epsilon
+    if (nullable[non_terminal_id] && epsilon_id >= 0 && epsilon_id < g->num_terminals) {
+        if (!add_symbol_to_array(out_first, &symbol_count, g->terminals[epsilon_id].symbol, true)) {
+            free_symbol_array(*out_first, symbol_count);
+            *out_first = NULL;
+            return 0;
+        }
+    }
+
+	return symbol_count;
+
 }
 
 /**
