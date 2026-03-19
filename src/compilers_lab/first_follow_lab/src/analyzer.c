@@ -172,6 +172,24 @@ static int collect_follow_for_non_terminal(
 int compute_first_for_non_terminal(const grammar *g, int non_terminal_id, symbol **out_first)
 {
 	// TODO: Validate inputs, compute shared FIRST tables, and collect FIRST for the requested non-terminal.
+	if (g == NULL || non_terminal_id < 0 || non_terminal_id >= g->num_non_terminals || out_first == NULL) {
+		return 0;
+	}
+	bool *first_table = NULL;
+    bool *nullable = NULL;
+	int epsilon_id;
+
+	if (!compute_first_tables(g, &first_table, &nullable, &epsilon_id)) {
+        return 0;
+    }
+
+	int count = collect_first_for_non_terminal(g, non_terminal_id, first_table, nullable, epsilon_id, out_first);
+	
+	free(first_table);
+    free(nullable);
+
+	return count;
+	
 }
 
 /**
