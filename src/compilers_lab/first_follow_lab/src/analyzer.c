@@ -122,6 +122,7 @@ static bool compute_first_tables(const grammar *g, bool **first_table, bool **nu
 						(*first_table)[no_term_id * g->num_terminals + term_id] = true;
 						changed = true;
 					}
+					all_nullable = false;
 					break; 
 				} else {
 					// [FIRST] Symbol is a non-terminal, add its FIRST set to FIRST(X)
@@ -133,8 +134,7 @@ static bool compute_first_tables(const grammar *g, bool **first_table, bool **nu
 								changed = true;
 							}
 						}
-						all_nullable =false;
-						break;
+					
 					}
 					if (!(*nullable)[next_no_term_id]) {
 						all_nullable = false;	
