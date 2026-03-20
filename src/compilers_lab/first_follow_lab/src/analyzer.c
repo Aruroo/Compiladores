@@ -348,6 +348,39 @@ static int collect_follow_for_non_terminal(
 	symbol **out_follow)
 {
 	// TODO: Read one FOLLOW row, append terminal symbols, and include end marker '$' when present.
+	if (g == NULL || follow_table == NULL || out_follow == NULL) {
+		return 0;
+	}
+
+	if (non_terminal_id < 0 || non_terminal_id >= g->num_non_terminals) {
+		return 0; 
+	}
+
+	*out_follow = NULL;
+	int symbol_count = 0;
+
+	// Read the FOLLOW row for the non-terminal
+	for (int col = 0; col < follow_cols; col++) {
+		if (follow_table[non_terminal_id * follow_cols + col]) { 
+			if (col < g->num_terminals) {
+				// Reached a terminal, append it to the output array if it's not the end marker '$'
+				if (!add_symbol_to_array(out_follow, &symbol_count, g->terminals[col].symbol, true)) {
+					free_symbol_array(*out_follow, symbol_count);
+					*out_follow = NULL;
+					return 0; 
+				}
+			// Reached the end marker '$' (last column)
+			} else if (col == g->num_terminals) {
+				if (!add_symbol_to_array(out_follow, &symbol_count, "$", true)) {
+					free_symbol_array(*out_follow, symbol_count);
+					*out_follow = NULL;
+					return 0; 
+				}
+			}
+		}
+	}
+
+	return symbol_count;
 }
 
 /**
