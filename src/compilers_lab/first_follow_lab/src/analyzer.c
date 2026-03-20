@@ -168,14 +168,114 @@ static bool compute_first_tables(const grammar *g, bool **first_table, bool **nu
  * @return true on success, false on allocation error or invalid input.
  */
 static bool compute_follow_table(
-	const grammar *g,
-	const bool *first_table,
-	const bool *nullable,
-	int epsilon_id,
-	bool **out_follow,
-	int *out_follow_cols)
+    const grammar *g,
+    const bool *first_table,
+    const bool *nullable,
+    int epsilon_id,
+    bool **out_follow,
+    int *out_follow_cols)
 {
-	// TODO: Allocate FOLLOW structures and propagate FOLLOW sets right-to-left until convergence.
+    if (g == NULL || first_table == NULL || nullable == NULL || 
+        out_follow == NULL || out_follow_cols == NULL) {
+        return false;
+    }
+    
+    int num_nt = g->num_non_terminals;
+    int num_t = g->num_terminals;
+    int num_cols = num_t + 1;  // Terminals '$'
+    
+    *out_follow = calloc(num_nt * num_cols, sizeof(bool));
+    if (*out_follow == NULL) {
+        return false;
+    }
+    *out_follow_cols = num_cols;
+    
+    // initial symbol has '$'
+    int dollar_col = num_t;
+    (*out_follow)[0 * num_cols + dollar_col] = true;
+    
+    bool changed = true;
+    while (changed) {
+        changed = false;
+        
+        // for all productions
+        for (int i = 0; i < g->num_productions; i++) {
+            production *prod = &g->productions[i];
+            int nt_left = prod->non_terminal_id;
+            
+            // right side looking for non terminals
+            for (int j = 0; j < prod->production_length; j++) {
+                int sym_id = prod->production_symbol_ids[j];
+                
+				// Non terminals
+                if (sym_id >= g->num_terminals) {
+                    int nt_right = sym_id - g->num_terminals;  // X in "A -> a X B"
+                    
+                    // j+1 position after B
+                    int k = j + 1;
+                    
+                    // Adds first(B) to Follow(X)
+                    // Process all symbols of B until find one non nullable
+                    bool all_beta_nullable = true;
+                    
+                    while (k < prod->production_length) {
+                        int next_sym = prod->production_symbol_ids[k];
+                        
+                        if (next_sym < g->num_terminals) {
+                            // B starts with a terminal, adding it and finishing
+                            int term_id = next_sym;
+                            int idx = nt_right * num_cols + term_id;
+                            if (!(*out_follow)[idx]) {
+                                (*out_follow)[idx] = true;
+                                changed = true;
+                            }
+                            all_beta_nullable = false;
+                            break;
+                        } else {
+                            // B starts with a non terminal
+                            int beta_nt = next_sym - g->num_terminals;
+                            
+                            // Adds FIRST(beta_nt) - {epsilon } to FOLLOW(X)
+                            for (int t = 0; t < num_t; t++) {
+                                if (t == epsilon_id) continue;
+                                
+                                if (first_table[beta_nt * num_t + t]) {
+                                    int idx = nt_right * num_cols + t;
+                                    if (!(*out_follow)[idx]) {
+                                        (*out_follow)[idx] = true;
+                                        changed = true;
+                                    }
+                                }
+                            }
+                            
+                            // If beta_nt isn't nullable, stop
+                            if (!nullable[beta_nt]) {
+                                all_beta_nullable = false;
+                                break;
+                            }
+                            // if nullable continue with next symbol
+                            k++;
+                        }
+                    }
+                    
+                    // If B is nullable , FOLLOW(A) in FOLLOW(X)
+                    if (all_beta_nullable || k == prod->production_length) {
+                        for (int col = 0; col < num_cols; col++) {
+                            if ((*out_follow)[nt_left * num_cols + col]) {
+                                int idx = nt_right * num_cols + col;
+                                if (!(*out_follow)[idx]) {
+                                    (*out_follow)[idx] = true;
+                                    changed = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    return true;
 }
 
 /**
