@@ -347,7 +347,6 @@ static int collect_follow_for_non_terminal(
 	int follow_cols,
 	symbol **out_follow)
 {
-	// TODO: Read one FOLLOW row, append terminal symbols, and include end marker '$' when present.
 	if (g == NULL || follow_table == NULL || out_follow == NULL) {
 		return 0;
 	}
@@ -392,7 +391,6 @@ static int collect_follow_for_non_terminal(
  */
 int compute_first_for_non_terminal(const grammar *g, int non_terminal_id, symbol **out_first)
 {
-	// TODO: Validate inputs, compute shared FIRST tables, and collect FIRST for the requested non-terminal.
 	if (g == NULL || non_terminal_id < 0 || non_terminal_id >= g->num_non_terminals || out_first == NULL) {
 		return 0;
 	}
