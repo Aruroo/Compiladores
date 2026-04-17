@@ -61,15 +61,24 @@ cmake --build build -j"$(nproc)"
 Program usage:
 
 ```text
-first_and_follow <grammar_file> [source_file] [table_output.(csv|json)]
+first_and_follow -l <table_input> <grammar_file> [source_file] [table_output.(csv|json)]
 ```
-
+- `table_input` optional for loading an already created parse table.
 - `grammar_file`: grammar definition used to build automaton and table.
 - `source_file`: optional input source scanned by Flex (`yyin`).
 - `table_output.(csv|json)`: optional output file for the generated parse table.
 	If omitted, the program writes `parse_table.csv` in the working directory.
 
 ### Example
+
+Example loading an already created table:
+
+```powershell
+./build/first_and_follow -l ./examples/parse_table.csv ./examples/grammar_decl.txt ./examples/input_decl.c
+```
+Expected output should end with:
+=== ACCEPTED INPUT ===
+Input accepted.
 
 ```powershell
 ./build/first_and_follow ./examples/grammar_decl.txt ./examples/input_decl.c
