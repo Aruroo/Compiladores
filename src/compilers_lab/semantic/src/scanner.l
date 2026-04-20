@@ -8,7 +8,7 @@
 
 ALIAS [a-zA-Z_][a-zA-Z0-9_]*
 ENTERO [0-9]+
-FLOTANTE ({ENTERO}\.{ENTERO})|({ENTERO}\.{ENTERO}[eE][+-]?{ENTERO})|({ENTERO}[eE][+-]?{ENTERO})
+FLOTANTE ({ENTERO}\.{ENTERO})
 RELLENO [ \t\r\n]+
 %%
 
@@ -21,6 +21,8 @@ RELLENO [ \t\r\n]+
 
 {RELLENO} {}
 
+"hola" {return TOK_KW_HOLA;}
+"atentamente," {return TOK_KW_ATENTAMENTE;}
 "entero" {return TOK_KW_ENTERO;}
 "flotante" {return TOK_KW_FLOTANTE;}
 "letra" {return TOK_KW_LETRA;}
