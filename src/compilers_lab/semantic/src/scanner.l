@@ -22,7 +22,7 @@ RELLENO [ \t\r\n]+
 {RELLENO} {}
 
 "hola" {return TOK_KW_HOLA;}
-"atentamente," {return TOK_KW_ATENTAMENTE;}
+"atentamente" {return TOK_KW_ATENTAMENTE;}
 "entero" {return TOK_KW_ENTERO;}
 "flotante" {return TOK_KW_FLOTANTE;}
 "letra" {return TOK_KW_LETRA;}
