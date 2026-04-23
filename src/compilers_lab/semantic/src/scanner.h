@@ -23,7 +23,6 @@ typedef enum ScannerToken {
     TOK_KW_CUANDO,
     TOK_KW_SINO,
     TOK_KW_MIENTRAS,
-    TOK_KW_ITERA,
     TOK_KW_DEVUELVE,
     TOK_KW_ROMPE,
     TOK_KW_CONTINUA,
@@ -35,14 +34,7 @@ typedef enum ScannerToken {
     TOK_TEXTO_LITERAL,
     TOK_LETRA_LITERAL,
 
-    /* Operadores de asignación */
-    TOK_INC,
-    TOK_DEC,
-    TOK_PLUS_ASSIGN,
-    TOK_MINUS_ASSIGN,
-    TOK_MUL_ASSIGN,
-    TOK_DIV_ASSIGN,
-    TOK_MOD_ASSIGN,
+    /* Operador de asignación */
     TOK_ASSIGN,
 
     /* Operadores de comparación */
@@ -70,10 +62,7 @@ typedef enum ScannerToken {
     TOK_RPAREN,
     TOK_LBRACE,
     TOK_RBRACE,
-    TOK_LBRACKET,
-    TOK_RBRACKET,
     TOK_COMMA,
-    TOK_SEMICOLON
 } ScannerToken;
 
 const char *scanner_token_name(int token);

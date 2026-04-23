@@ -38,13 +38,6 @@ RELLENO [ \t\r\n]+
 "texto" {return TOK_KW_TEXTO;}
 "lee" {return TOK_KW_LEE;}
 
-"++" {return TOK_INC;}
-"--" {return TOK_DEC;}
-"+=" {return TOK_PLUS_ASSIGN;}
-"-=" {return TOK_MINUS_ASSIGN;}
-"*=" {return TOK_MUL_ASSIGN;}
-"/=" {return TOK_DIV_ASSIGN;}
-"%=" {return TOK_MOD_ASSIGN;}
 "==" {return TOK_EQ;}
 "!=" {return TOK_NEQ;}
 "<=" {return TOK_LE;}
@@ -66,10 +59,7 @@ RELLENO [ \t\r\n]+
 ")" {return TOK_RPAREN;}
 "{" {return TOK_LBRACE;}
 "}" {return TOK_RBRACE;}
-"[" {return TOK_LBRACKET;}
-"]" {return TOK_RBRACKET;}
 "," {return TOK_COMMA;}
-";" {return TOK_SEMICOLON;}
 
 {FLOTANTE} {return TOK_FLOTANTE_LITERAL;}
 {ENTERO} {return TOK_ENTERO_LITERAL;}
