@@ -75,8 +75,79 @@ lista_params
     | lista_params TOK_COMMA tipo TOK_ALIAS
     ;
 
-argumento
-    : tipo TOK_ALIAS
+
+oraciones
+    : oracion oraciones
+    |
+    ;
+
+oracion
+    : oracion_abierta
+    | oracion_cerrada
+    ;
+
+oracion_cerrada
+    : TOK_KW_CUANDO TOK_LPAREN expresion_booleana TOK_RPAREN TOK_LBRACE oraciones TOK_RBRACE TOK_KW_SINO TOK_LBRACE oraciones TOK_RBRACE
+    | TOK_KW_MIENTRAS TOK_LPAREN expresion_booleana TOK_RPAREN TOK_LBRACE oraciones TOK_RBRACE
+    | TOK_KW_DEVUELVE expresion
+    | TOK_KW_ROMPE
+    | TOK_KW_CONTINUA
+    | TOK_KW_MUESTRA TOK_LPAREN expresion TOK_RPAREN
+    | TOK_KW_LEE TOK_LPAREN TOK_ALIAS TOK_RPAREN
+    | tipo TOK_ALIAS TOK_ASSIGN expresion
+    | tipo TOK_ALIAS
+    | TOK_ALIAS TOK_ASSIGN expresion
+    | TOK_ALIAS TOK_LPAREN args TOK_RPAREN
+    ;
+
+oracion_abierta
+    : TOK_KW_CUANDO TOK_LPAREN expresion_booleana TOK_RPAREN TOK_LBRACE oraciones TOK_RBRACE
+    ;
+
+expresion
+    : expresion TOK_PLUS termino
+    | expresion TOK_MINUS termino
+    | termino
+    ;
+
+termino
+    : termino TOK_MUL factor
+    | termino TOK_DIV factor 
+    | termino TOK_MOD factor
+    | factor
+    ;
+
+factor
+    : TOK_LPAREN expresion TOK_RPAREN
+    | TOK_MINUS factor
+    | TOK_ALIAS
+    | TOK_ALIAS TOK_LPAREN args TOK_RPAREN
+    | TOK_ENTERO_LITERAL
+    | TOK_FLOTANTE_LITERAL
+    | TOK_TEXTO_LITERAL
+    | TOK_LETRA_LITERAL
+    ;
+
+expresion_booleana
+    : expresion_booleana TOK_OR termino_bool
+    | termino_bool
+    ;
+
+termino_bool
+    : termino_bool TOK_AND factor_bool
+    | factor_bool
+    ;
+
+factor_bool
+    : TOK_NOT factor_bool
+    | expresion TOK_EQ expresion
+    | expresion TOK_NEQ expresion
+    | expresion TOK_LT expresion
+    | expresion TOK_LE expresion
+    | expresion TOK_GT expresion
+    | expresion TOK_GE expresion
+    | TOK_LPAREN expresion_booleana TOK_RPAREN
+    | expresion /* to use 0, 1 or var*/
     ;
 
 args
