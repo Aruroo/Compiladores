@@ -251,3 +251,36 @@ struct NodoPrograma : Nodo {
         for (const auto &p : parrafos) if (p) p->imprimir(nivel + 2);
     }
 };
+
+Nodo* hacer_entero   (int val,         int linea);
+Nodo* hacer_flotante (double val,      int linea);
+Nodo* hacer_letra    (char val,        int linea);
+Nodo* hacer_texto    (const char* val, int linea);
+Nodo* hacer_alias    (const char* nombre, int linea);
+
+Nodo* hacer_binop (OpBinaria op, Nodo* izq, Nodo* der, int linea);
+Nodo* hacer_unop  (OpUnaria  op, Nodo* hijo,            int linea);
+
+Nodo* hacer_llamada (const char* nombre, std::vector<Nodo*>* args, int linea);
+
+Nodo* hacer_decl       (Tipo tipo, const char* nombre, Nodo* valor, int linea); // valor puede ser nullptr
+Nodo* hacer_asignacion (const char* nombre, Nodo* valor, int linea);
+
+Nodo* hacer_cuando  (Nodo* cond, std::vector<Nodo*>* entonces, std::vector<Nodo*>* sino, int linea);
+Nodo* hacer_mientras (Nodo* cond, std::vector<Nodo*>* cuerpo, int linea);
+Nodo* hacer_devuelve (Nodo* valor, int linea);
+Nodo* hacer_rompe    (int linea);
+Nodo* hacer_continua (int linea);
+
+
+Nodo* hacer_muestra (Nodo* valor,          int linea);
+Nodo* hacer_lee     (const char* nombre,   int linea);
+
+Nodo* hacer_param (Tipo tipo, const char* nombre, int linea);
+
+Nodo* hacer_funcion (Tipo retorno, const char* nombre,
+                     std::vector<Nodo*>* params,
+                     std::vector<Nodo*>* cuerpo, int linea);
+
+Nodo* hacer_programa (const char* destinatario, const char* firma,
+                      std::vector<Nodo*>* parrafos, int linea);

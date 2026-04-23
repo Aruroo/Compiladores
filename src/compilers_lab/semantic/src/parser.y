@@ -1,41 +1,55 @@
-%{
-#include <stdio.h>
-#include "scanner.h"
+%code requires {
+    #include <vector>
+    #include "ast.h"
+}
 
+%{
+#include "scanner.h"
 extern int yylex(void);
 extern int yylineno;
 void yyerror(const char *msg);
 %}
 
-%token TOK_KW_HOLA
-%token TOK_KW_ATENTAMENTE
-%token TOK_KW_QUERIDO
-%token TOK_KW_MUESTRA
-%token TOK_KW_TEXTO
-%token TOK_KW_LEE
-%token TOK_KW_ENTERO
-%token TOK_KW_FLOTANTE
-%token TOK_KW_LETRA
-%token TOK_KW_NADA
-%token TOK_KW_CUANDO
-%token TOK_KW_SINO
-%token TOK_KW_MIENTRAS
-%token TOK_KW_DEVUELVE
-%token TOK_KW_ROMPE
-%token TOK_KW_CONTINUA
-%token TOK_ALIAS
-%token TOK_ENTERO_LITERAL
-%token TOK_FLOTANTE_LITERAL
-%token TOK_TEXTO_LITERAL
-%token TOK_LETRA_LITERAL
+%union {
+    int    ival;
+    double dval;
+    char   cval;
+    char*  sval;
+
+    Nodo*  nodo;
+    Tipo  tipo;
+
+    std::vector<Nodo*>* lista;
+}
+
+%token <ival> TOK_ENTERO_LITERAL
+%token <dval> TOK_FLOTANTE_LITERAL
+%token <cval> TOK_LETRA_LITERAL
+%token <sval> TOK_TEXTO_LITERAL TOK_ALIAS
+
+%token TOK_KW_HOLA TOK_KW_ATENTAMENTE TOK_KW_QUERIDO
+%token TOK_KW_MUESTRA TOK_KW_TEXTO TOK_KW_LEE
+%token TOK_KW_ENTERO TOK_KW_FLOTANTE TOK_KW_LETRA TOK_KW_NADA
+%token TOK_KW_CUANDO TOK_KW_SINO TOK_KW_MIENTRAS
+%token TOK_KW_DEVUELVE TOK_KW_ROMPE TOK_KW_CONTINUA
 %token TOK_ASSIGN
-%token TOK_EQ TOK_NEQ
-%token TOK_LT TOK_LE TOK_GT TOK_GE
+%token TOK_EQ TOK_NEQ TOK_LT TOK_LE TOK_GT TOK_GE
 %token TOK_AND TOK_OR TOK_NOT
 %token TOK_PLUS TOK_MINUS TOK_MUL TOK_DIV TOK_MOD
-%token TOK_LPAREN TOK_RPAREN
-%token TOK_LBRACE TOK_RBRACE
-%token TOK_COMMA
+%token TOK_LPAREN TOK_RPAREN TOK_LBRACE TOK_RBRACE TOK_COMMA
+
+%type <nodo>  expresion termino factor
+%type <nodo>  expresion_booleana termino_bool factor_bool
+%type <nodo>  oracion oracion_cerrada oracion_abierta
+%type <nodo>  funcion programa
+%type <nodo>  parrafo
+%type <tipo>  tipo
+%type <lista> oraciones parrafos
+%type <lista> params lista_params
+%type <lista> args lista_args
+
+%destructor { delete $$; } <nodo>
+%destructor { delete $$; } <lista>
 
 %%
 

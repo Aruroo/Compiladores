@@ -1,6 +1,7 @@
 %option noyywrap yylineno
 
 %{
+	#include "parser.tab.h"
 	#include "scanner.h"
 %}
 
@@ -16,7 +17,7 @@ RELLENO [ \t\r\n]+
 <COMENTARIO>"*/" {BEGIN(INITIAL);}
 <COMENTARIO>\n {}
 <COMENTARIO>. {}
-<COMENTARIO><<EOF>> {return TOK_ERROR;}
+<COMENTARIO><<EOF>> { return yytext[0]; }
 "//"[^\n]* {}
 
 {RELLENO} {}
@@ -61,12 +62,12 @@ RELLENO [ \t\r\n]+
 "}" {return TOK_RBRACE;}
 "," {return TOK_COMMA;}
 
-{FLOTANTE} {return TOK_FLOTANTE_LITERAL;}
-{ENTERO} {return TOK_ENTERO_LITERAL;}
-'([^'\\\n]|\\.)' {return TOK_LETRA_LITERAL;}
-\"([^\"\\\n]|\\.)*\" {return TOK_TEXTO_LITERAL;}
-{ALIAS} {return TOK_ALIAS;}
+{FLOTANTE}              { yylval.dval = atof(yytext); return TOK_FLOTANTE_LITERAL; }
+{ENTERO}                { yylval.ival = atoi(yytext); return TOK_ENTERO_LITERAL; }
+'([^'\\\n]|\\.)'        { yylval.cval = yytext[1];   return TOK_LETRA_LITERAL; }
+\"([^\"\\\n]|\\.)*\"    { yylval.sval = strdup(yytext); return TOK_TEXTO_LITERAL; }
+{ALIAS}                 { yylval.sval = strdup(yytext); return TOK_ALIAS; }
 
-<<EOF>> {return TOK_EOF;}
-. {return TOK_ERROR;}
+<<EOF>>  { return 0; }
+.        { return yytext[0]; }
 %%

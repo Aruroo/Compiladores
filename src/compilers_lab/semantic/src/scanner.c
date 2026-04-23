@@ -9,7 +9,7 @@ int main(void)
 {
 	int token;
 
-	while((token = yylex()) != TOK_EOF) {
+	while((token = yylex()) != 0) {
 		printf("[%s:%s]\n", scanner_token_name(token), yytext);
 	}
 	return 0;
@@ -17,9 +17,6 @@ int main(void)
 
 const char *scanner_token_name(int token) {
     switch (token) {
-        case TOK_EOF:               return "TOK_EOF";
-        case TOK_ERROR:             return "TOK_ERROR";
-
         case TOK_KW_HOLA:           return "TOK_KW_HOLA";
         case TOK_KW_ATENTAMENTE:    return "TOK_KW_ATENTAMENTE";
         case TOK_KW_QUERIDO:        return "TOK_KW_QUERIDO";
