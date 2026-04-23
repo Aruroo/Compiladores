@@ -10,6 +10,8 @@ typedef enum ScannerToken {
     TOK_KW_ATENTAMENTE,
     TOK_KW_QUERIDO,
     TOK_KW_MUESTRA,
+    TOK_KW_TEXTO,
+    TOK_KW_LEE,
 
     /* Palabras clave de tipos */
     TOK_KW_ENTERO,
@@ -30,8 +32,8 @@ typedef enum ScannerToken {
     TOK_ALIAS,
     TOK_ENTERO_LITERAL,
     TOK_FLOTANTE_LITERAL,
-    TOK_STRING_LITERAL,
-    TOK_CHAR_LITERAL,
+    TOK_TEXTO_LITERAL,
+    TOK_LETRA_LITERAL,
 
     /* Operadores de asignación */
     TOK_INC,
