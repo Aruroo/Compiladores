@@ -24,6 +24,9 @@ const char *scanner_token_name(int token) {
         case TOK_KW_ATENTAMENTE:    return "TOK_KW_ATENTAMENTE";
         case TOK_KW_QUERIDO:        return "TOK_KW_QUERIDO";
         case TOK_KW_MUESTRA:        return "TOK_KW_MUESTRA";
+        
+        case TOK_KW_TEXTO:        return "TOK_KW_TEXTO";
+        case TOK_KW_LEE:          return "TOK_KW_LEE";
 
         case TOK_KW_ENTERO:         return "TOK_KW_ENTERO";
         case TOK_KW_FLOTANTE:       return "TOK_KW_FLOTANTE";
@@ -33,7 +36,6 @@ const char *scanner_token_name(int token) {
         case TOK_KW_CUANDO:         return "TOK_KW_CUANDO";
         case TOK_KW_SINO:           return "TOK_KW_SINO";
         case TOK_KW_MIENTRAS:       return "TOK_KW_MIENTRAS";
-        case TOK_KW_ITERA:          return "TOK_KW_ITERA";
         case TOK_KW_DEVUELVE:       return "TOK_KW_DEVUELVE";
         case TOK_KW_ROMPE:          return "TOK_KW_ROMPE";
         case TOK_KW_CONTINUA:       return "TOK_KW_CONTINUA";
@@ -41,16 +43,9 @@ const char *scanner_token_name(int token) {
         case TOK_ALIAS:             return "TOK_ALIAS";
         case TOK_ENTERO_LITERAL:    return "TOK_ENTERO_LITERAL";
         case TOK_FLOTANTE_LITERAL:  return "TOK_FLOTANTE_LITERAL";
-        case TOK_STRING_LITERAL:    return "TOK_STRING_LITERAL";
-        case TOK_CHAR_LITERAL:      return "TOK_CHAR_LITERAL";
+        case TOK_TEXTO_LITERAL:    return "TOK_TEXTO_LITERAL";
+        case TOK_LETRA_LITERAL:      return "TOK_LETRA_LITERAL";
 
-        case TOK_INC:               return "TOK_INC";
-        case TOK_DEC:               return "TOK_DEC";
-        case TOK_PLUS_ASSIGN:       return "TOK_PLUS_ASSIGN";
-        case TOK_MINUS_ASSIGN:      return "TOK_MINUS_ASSIGN";
-        case TOK_MUL_ASSIGN:        return "TOK_MUL_ASSIGN";
-        case TOK_DIV_ASSIGN:        return "TOK_DIV_ASSIGN";
-        case TOK_MOD_ASSIGN:        return "TOK_MOD_ASSIGN";
         case TOK_ASSIGN:            return "TOK_ASSIGN";
 
         case TOK_EQ:                return "TOK_EQ";
@@ -74,10 +69,7 @@ const char *scanner_token_name(int token) {
         case TOK_RPAREN:            return "TOK_RPAREN";
         case TOK_LBRACE:            return "TOK_LBRACE";
         case TOK_RBRACE:            return "TOK_RBRACE";
-        case TOK_LBRACKET:          return "TOK_LBRACKET";
-        case TOK_RBRACKET:          return "TOK_RBRACKET";
         case TOK_COMMA:             return "TOK_COMMA";
-        case TOK_SEMICOLON:         return "TOK_SEMICOLON";
 
         default:                    return "TOK_DESCONOCIDO";
     }
