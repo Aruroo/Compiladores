@@ -1,0 +1,9 @@
+hola, condicional {
+    entero x = 10
+    cuando (x > 5) {
+        muestra("x es mayor que 5")
+    } sino {
+        muestra("x es menor o igual a 5")
+    }
+}
+atentamente, autor
