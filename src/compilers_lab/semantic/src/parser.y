@@ -4,11 +4,19 @@
 }
 
 %{
+#include <stdio.h>
 #include "scanner.h"
 extern int yylex(void);
 extern int yylineno;
+extern char *yytext;
 void yyerror(const char *msg);
+
+Nodo* raiz = nullptr;  
 %}
+
+%locations
+%define parse.error custom
+%define parse.lac full
 
 %union {
     int    ival;
@@ -22,26 +30,54 @@ void yyerror(const char *msg);
     std::vector<Nodo*>* lista;
 }
 
-%token <ival> TOK_ENTERO_LITERAL
-%token <dval> TOK_FLOTANTE_LITERAL
-%token <cval> TOK_LETRA_LITERAL
-%token <sval> TOK_TEXTO_LITERAL TOK_ALIAS
+%token <ival> TOK_ENTERO_LITERAL "entero literal"
+%token <dval> TOK_FLOTANTE_LITERAL "flotante literal"
+%token <cval> TOK_LETRA_LITERAL "letra literal"
+%token <sval> TOK_TEXTO_LITERAL "texto literal"
+%token <sval> TOK_ALIAS "alias"
 
-%token TOK_KW_HOLA TOK_KW_ATENTAMENTE TOK_KW_QUERIDO
-%token TOK_KW_MUESTRA TOK_KW_TEXTO TOK_KW_LEE
-%token TOK_KW_ENTERO TOK_KW_FLOTANTE TOK_KW_LETRA TOK_KW_NADA
-%token TOK_KW_CUANDO TOK_KW_SINO TOK_KW_MIENTRAS
-%token TOK_KW_DEVUELVE TOK_KW_ROMPE TOK_KW_CONTINUA
-%token TOK_ASSIGN
-%token TOK_EQ TOK_NEQ TOK_LT TOK_LE TOK_GT TOK_GE
-%token TOK_AND TOK_OR TOK_NOT
-%token TOK_PLUS TOK_MINUS TOK_MUL TOK_DIV TOK_MOD
-%token TOK_LPAREN TOK_RPAREN TOK_LBRACE TOK_RBRACE TOK_COMMA
+%token TOK_KW_HOLA "hola"
+%token TOK_KW_ATENTAMENTE "atentamente"
+%token TOK_KW_QUERIDO "querido"
+%token TOK_KW_MUESTRA "muestra"
+%token TOK_KW_TEXTO "texto"
+%token TOK_KW_LEE "lee"
+%token TOK_KW_ENTERO "entero"
+%token TOK_KW_FLOTANTE "flotante"
+%token TOK_KW_LETRA "letra"
+%token TOK_KW_NADA "nada"
+%token TOK_KW_CUANDO "cuando"
+%token TOK_KW_SINO "sino"
+%token TOK_KW_MIENTRAS "mientras"
+%token TOK_KW_DEVUELVE "devuelve"
+%token TOK_KW_ROMPE "rompe"
+%token TOK_KW_CONTINUA "continua"
+
+%token TOK_ASSIGN  "="
+%token TOK_EQ      "=="
+%token TOK_NEQ     "!="
+%token TOK_LT      "<"
+%token TOK_LE      "<="
+%token TOK_GT      ">"
+%token TOK_GE      ">="
+%token TOK_AND     "&&"
+%token TOK_OR      "||"
+%token TOK_NOT     "!"
+%token TOK_PLUS    "+"
+%token TOK_MINUS   "-"
+%token TOK_MUL     "*"
+%token TOK_DIV     "/"
+%token TOK_MOD     "%"
+%token TOK_LPAREN  "("
+%token TOK_RPAREN  ")"
+%token TOK_LBRACE  "{"
+%token TOK_RBRACE  "}"
+%token TOK_COMMA   ","
 
 %type <nodo>  expresion termino factor
 %type <nodo>  expresion_booleana termino_bool factor_bool
 %type <nodo>  oracion oracion_cerrada oracion_abierta
-%type <nodo>  funcion programa
+%type <nodo>  funcion 
 %type <nodo>  parrafo
 %type <tipo>  tipo
 %type <lista> oraciones parrafos
@@ -56,7 +92,7 @@ void yyerror(const char *msg);
 programa
     : TOK_KW_HOLA TOK_COMMA TOK_ALIAS TOK_LBRACE parrafos TOK_RBRACE TOK_KW_ATENTAMENTE TOK_COMMA TOK_ALIAS
         {
-            $$ = hacer_programa($3, $9, $5, yylineno);
+            raiz = hacer_programa($3, $9, $5, yylineno); 
             free($3);
             free($9);
         }
@@ -237,6 +273,36 @@ lista_args
 
 %%
 
-void yyerror(const char *msg) {
-    fprintf(stderr, "syntax error: %s at line %d\n", msg, yylineno);
+static int yyreport_syntax_error(const yypcontext_t *ctx) {
+    yysymbol_kind_t lookahead = yypcontext_token(ctx);
+
+    enum { MAX_ESPERADOS = 32 };
+    yysymbol_kind_t esperados[MAX_ESPERADOS];
+    int n = yypcontext_expected_tokens(ctx, esperados, MAX_ESPERADOS);
+    if (n < 0) return n;   /* error interno de Bison */
+
+    const YYLTYPE *loc = yypcontext_location(ctx);
+    int line = (loc && loc->first_line > 0) ? loc->first_line : yylineno;
+
+    fprintf(stderr, "syntax error: ");
+
+    if (n == 1) {
+        fprintf(stderr, "expected %s", yysymbol_name(esperados[0]));
+    } else if (n > 1) {
+        fprintf(stderr, "expected one of ");
+        for (int i = 0; i < n; ++i) {
+            fprintf(stderr, "%s%s",
+                    yysymbol_name(esperados[i]),
+                    (i + 1 < n) ? ", " : "");
+        }
+    } else {
+        fprintf(stderr, "unexpected token");
+    }
+
+    if (lookahead != YYSYMBOL_YYEMPTY) {
+        fprintf(stderr, " but got %s", yysymbol_name(lookahead));
+    }
+
+    fprintf(stderr, " at line %d\n", line);
+    return 0;
 }

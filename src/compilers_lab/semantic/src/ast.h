@@ -7,6 +7,7 @@
 // unique_ptr offers automatic memory managment
 using NodoPtr = std::unique_ptr<struct Nodo>;
 
+// Enums for types and operators
 enum class Tipo {
     ENTERO,
     FLOTANTE,
@@ -15,16 +16,20 @@ enum class Tipo {
     NADA,
 };
 
+// Binary operators: +, -, *, /, %, ==, !=, <, <=, >, >=, &&, ||
 enum class OpBinaria {
     SUMA, RESTA, MUL, DIV, MOD,
     EQ, NEQ, LT, LE, GT, GE,
     AND, OR,
 };
 
+// Unary operators: - (negation), ! (logical NOT)
 enum class OpUnaria {
     NEGACION,
     NOT,
 };
+
+// Helper functions to convert enums to strings for printing
 
 inline std::string tipo_str(Tipo t) { // return the string representation of the type
     switch(t) {
@@ -60,11 +65,16 @@ inline std::string sangria(int nivel) { // return a string with 2 spaces per lev
     return std::string(nivel * 2, ' ');
 }
 
+// Base class for all AST nodes
 struct Nodo {
     int linea;
     virtual ~Nodo() = default;
     virtual void imprimir(int nivel = 0) const = 0;
 };
+
+// AST node types
+
+// Literal nodes
 
 struct NodoEntero : Nodo {
     int valor;
@@ -98,6 +108,8 @@ struct NodoAlias : Nodo {
     void imprimir(int nivel) const override {
         std::cout << sangria(nivel) << "ALIAS(" << nombre << ") [linea " << linea << "]\n";    }
 };
+
+// Expression nodes
 
 struct NodoBinop : Nodo { // aritmetic or logic
     OpBinaria op;
@@ -139,6 +151,8 @@ struct NodoDecl : Nodo {
     }
 };
 
+// Statement nodes
+
 struct NodoAsignacion : Nodo {
     std::string nombre;
     NodoPtr valor;
@@ -147,6 +161,8 @@ struct NodoAsignacion : Nodo {
         if (valor) valor->imprimir(nivel + 1);
     }
 };
+
+// Control flow nodes
 
 struct NodoCuando : Nodo {
     NodoPtr condicion; // can be any boolean or aritmetic expresion
@@ -193,6 +209,8 @@ struct NodoMuestra : Nodo {
     }
 };
 
+// Other statements: lee, rompe, continua
+
 struct NodoLee : Nodo {
     std::string nombre;
     void imprimir(int nivel) const override {
@@ -209,6 +227,8 @@ struct NodoContinua : Nodo {
     void imprimir(int nivel) const override {
         std::cout << sangria(nivel) << "CONTINUA [linea " << linea << "]\n";    }
 };
+
+// Function and program nodes
 
 struct NodoParam : Nodo {
     Tipo tipo;
@@ -237,16 +257,17 @@ struct NodoFuncion : Nodo {
 struct NodoPrograma : Nodo {
     std::string destinatario; // alias after "hola,"
     std::string firma; // alias after "atentamente,"
-    int linea_firma;    // línea del atentamente
     std::vector<NodoPtr> parrafos;
     void imprimir(int nivel) const override {
         std::cout << sangria(nivel) << "PROGRAMA [linea " << linea << "]\n";
         std::cout << sangria(nivel + 1) << "destinatario: " << destinatario << "\n";
-        std::cout << sangria(nivel + 1) << "firma: " << firma << " [linea " << linea_firma << "]\n";
+        std::cout << sangria(nivel + 1) << "firma: " << firma << "\n";
         std::cout << sangria(nivel + 1) << "PARRAFOS:\n";
         for (const auto &p : parrafos) if (p) p->imprimir(nivel + 2);
     }
 };
+
+// Factory functions to create AST nodes
 
 Nodo* hacer_entero   (int val,         int linea);
 Nodo* hacer_flotante (double val,      int linea);

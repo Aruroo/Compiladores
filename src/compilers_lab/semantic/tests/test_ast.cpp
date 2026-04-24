@@ -39,7 +39,6 @@ int main() {
     programa->destinatario = "mi_programa";
     programa->firma = "ssofiss";
     programa->linea = 1; // Assuming the program starts at line 1
-    programa->linea_firma = 4; // Assuming "atentamente, ssofiss" is at line 4
     programa->parrafos.push_back(std::move(decl));
 
     // Print the ast starting at indentation level 0

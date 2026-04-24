@@ -3,6 +3,8 @@
 %{
 	#include "parser.tab.h"
 	#include "scanner.h"
+	#define YY_USER_ACTION \
+		yylloc.first_line = yylloc.last_line = yylineno;
 %}
 
 %x COMENTARIO
