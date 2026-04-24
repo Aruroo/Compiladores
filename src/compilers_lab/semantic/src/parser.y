@@ -192,8 +192,6 @@ expresion_booleana
         { $$ = hacer_binop(OpBinaria::OR,  $1, $3, yylineno); }
     | termino_bool
         { $$ = $1; }
-    | TOK_LPAREN expresion_booleana TOK_RPAREN
-        { $$ = $2; }
     ;
 
 termino_bool
