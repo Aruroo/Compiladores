@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "AST.h"
+#include "ast.h"
 
 extern int yyparse(void);
 extern NodoPrograma *raiz;
