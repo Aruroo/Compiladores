@@ -1,0 +1,8 @@
+hola, ciclo {
+    entero i = 0
+    mientras (i < 5) {
+        muestra(i)
+        i = i + 1
+    }
+}
+atentamente, el_infinito

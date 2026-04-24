@@ -1,0 +1,8 @@
+hola, variables {
+    entero x = 5
+    flotante y = 3.14
+    texto mensaje = "hola mundo"
+    letra inicial = 'S'
+    x = x + 1
+}
+atentamente, pruebas

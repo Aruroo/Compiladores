@@ -1,4 +1,4 @@
-#include "../src/AST.h"
+#include "../src/ast.h"
 
 int main() {
     // Simulates: 
@@ -10,12 +10,12 @@ int main() {
     // Create the node for the integer literal 5
     auto cinco = std::make_unique<NodoEntero>();
     cinco->valor = 5;
-    cinco->linea = 1;
+    cinco->linea = 2;
 
     // Create the node for the integer literal 3
     auto tres = std::make_unique<NodoEntero>();
     tres->valor = 3;
-    tres->linea = 1;
+    tres->linea = 2;
 
     // Create the node for the binary operation 5 + 3
     // izq and der are moved, so cinco and tres are no longer valid after this
@@ -23,7 +23,7 @@ int main() {
     suma->op = OpBinaria::SUMA;
     suma->izq = std::move(cinco);
     suma->der = std::move(tres);
-    suma->linea = 1;
+    suma->linea = 2;
 
     // Create the node for the declaration: entero x = 5 + 3
     // valor is moved, so suma is no longer valid after this
@@ -31,13 +31,15 @@ int main() {
     decl->tipo = Tipo::ENTERO;
     decl->nombre = "x";
     decl->valor = std::move(suma);
-    decl->linea = 1;
+    decl->linea = 2;
 
     // Create the root program node and add the declaration as a paragraph
     // parrafos takes ownership of decl via move
     auto programa = std::make_unique<NodoPrograma>();
     programa->destinatario = "mi_programa";
     programa->firma = "ssofiss";
+    programa->linea = 1; // Assuming the program starts at line 1
+    programa->linea_firma = 4; // Assuming "atentamente, ssofiss" is at line 4
     programa->parrafos.push_back(std::move(decl));
 
     // Print the ast starting at indentation level 0
