@@ -1,0 +1,21 @@
+hola, euclides {
+    querido entero dividir (entero a, entero b) {
+        // a debe ser mayor o igual que b
+        // a = b + r
+        entero resultado = 0
+        entero dividendo = a
+        entero divisor = b
+
+        cuando(a > b){
+            letra inutil = 'a'
+            mientras(dividendo >= divisor){
+                dividendo = dividendo - divisor
+                entero aux = 1
+                resultado = resultado + aux                
+            }
+        }sino{ devuelve 0 }     
+    }
+    entero resultado = dividir(500, 5)
+    muestra(resultado)
+}
+atentamente, jonathan

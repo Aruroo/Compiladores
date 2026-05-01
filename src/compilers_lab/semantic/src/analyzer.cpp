@@ -235,5 +235,5 @@ int main(void) {
 
 void yyerror(const char* msg) {
     extern int yylineno;
-    fprintf(stderr, "error: %s en linea %d\n", msg, yylineno);
+    fprintf(stderr, "error: %s in line %d\n", msg, yylineno);
 }
