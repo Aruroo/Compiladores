@@ -7,7 +7,7 @@ hola, euclides {
         entero divisor = b
 
         cuando(a > b){
-            letra inutil = 'a'
+            letra inutil = 'a' // para observar el scope
             mientras(dividendo >= divisor){
                 dividendo = dividendo - divisor
                 entero aux = 1
@@ -17,5 +17,6 @@ hola, euclides {
     }
     entero resultado = dividir(500, 5)
     muestra(resultado)
+    // muestra(dividendo) resulta en error
 }
 atentamente, jonathan
