@@ -1,0 +1,5 @@
+hola, errorSemantico1 {
+    entero a = 5
+    entero a = 10
+}
+atentamente, sofia
