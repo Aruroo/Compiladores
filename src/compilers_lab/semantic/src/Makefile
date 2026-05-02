@@ -1,7 +1,7 @@
 all: carta
 
-carta: lex.yy.c parser.tab.c ast.cpp main.cpp
-	g++ lex.yy.c parser.tab.c ast.cpp main.cpp -o carta
+carta: lex.yy.c parser.tab.c ast.cpp analyzer.cpp
+	g++ lex.yy.c parser.tab.c ast.cpp analyzer.cpp -o carta
 
 lex.yy.c: scanner.l
 	flex scanner.l
