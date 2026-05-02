@@ -15,11 +15,26 @@ struct Simbolo {
     Categoria   categoria;
     Tipo        tipo;
     int         scope_nivel;
+    int         linea; // line where it was declared (for error reporting)
+    std::vector<Tipo> tipos_parametros; // only used if categoria == FUNCION
 };
 
 using TablaNivel = std::map<std::string, Simbolo>;
 std::vector<TablaNivel> pila_scopes;
 std::vector<Simbolo> todos_los_simbolos;
+
+// Representation of a semantic error
+struct ErrorSemantico {
+    std::string mensaje; // error message description
+    int         linea;   // line where the error occurred
+};
+
+std::vector<ErrorSemantico> errores_semanticos; // global list of semantic errors (errors are collected during the AST traversal)
+
+// helper function to report an error
+void reportar_error(const std::string& msg, int linea) {
+    errores_semanticos.push_back({msg, linea});
+}
 
 // operations on the stack
 
@@ -35,9 +50,9 @@ void cerrar_scope() {
 void declarar(const Simbolo& s) {
     auto& scope_actual = pila_scopes.back();
     if (scope_actual.count(s.nombre)) {
-        fprintf(stderr,
-            "error: '%s' was already declared in (line %d)\n",
-            s.nombre.c_str(), 0);
+        reportar_error(
+            "'" + s.nombre + "' was already declared in this scope",
+            s.linea);
         return;
     }
     scope_actual[s.nombre] = s;
@@ -78,8 +93,9 @@ void visitar(Nodo* nodo) {
 
     if (auto* n = dynamic_cast<NodoAlias*>(nodo)) {
         if (!buscar(n->nombre))
-            fprintf(stderr, "error: '%s' not initialized [line %d]\n",
-                n->nombre.c_str(), n->linea);
+            reportar_error(
+                "'" + n->nombre + "' is not initialized",
+                n->linea);
         return;
     }
 
@@ -87,16 +103,23 @@ void visitar(Nodo* nodo) {
 
     if (auto* n = dynamic_cast<NodoLee*>(nodo)) {
         if (!buscar(n->nombre))
-            fprintf(stderr, "error: '%s' not initialized [linea %d]\n",
-                n->nombre.c_str(), n->linea);
+            reportar_error(
+                "'" + n->nombre + "' is not initialized",
+                n->linea);
         return;
     }
 
     // declaration
 
     if (auto* n = dynamic_cast<NodoDecl*>(nodo)) {
-        declarar({ n->nombre, Categoria::VARIABLE, n->tipo,
-                   (int)pila_scopes.size() - 1 });
+        Simbolo s;
+        s.nombre = n->nombre;
+        s.categoria = Categoria::VARIABLE;
+        s.tipo = n->tipo;
+        s.scope_nivel = (int)pila_scopes.size() - 1;
+        s.linea = n->linea;
+        declarar(s);
+
         if (n->valor) visitar(n->valor.get());
         return;
     }
@@ -105,8 +128,9 @@ void visitar(Nodo* nodo) {
 
     if (auto* n = dynamic_cast<NodoAsignacion*>(nodo)) {
         if (!buscar(n->nombre))
-            fprintf(stderr, "error: '%s' not initialized [linea %d]\n",
-                n->nombre.c_str(), n->linea);
+            reportar_error(
+                "'" + n->nombre + "' is not initialized",
+                n->linea);
         if (n->valor) visitar(n->valor.get());
         return;
     }
@@ -128,8 +152,9 @@ void visitar(Nodo* nodo) {
 
     if (auto* n = dynamic_cast<NodoLlamada*>(nodo)) {
         if (!buscar(n->nombre))
-            fprintf(stderr, "error: '%s' not initialized [linea %d]\n",
-                n->nombre.c_str(), n->linea);
+            reportar_error(
+                "'" + n->nombre + "' is not initialized",
+                n->linea);
         for (const auto& a : n->args)
             if (a) visitar(a.get());
         return;
@@ -177,16 +202,34 @@ void visitar(Nodo* nodo) {
     // function
 
     if (auto* n = dynamic_cast<NodoFuncion*>(nodo)) {
+        Simbolo s;
+        s.nombre = n->nombre;
+        s.categoria = Categoria::FUNCION;
+        s.tipo = n->tipo_retorno;
+        s.scope_nivel = (int)pila_scopes.size() - 1;
+        s.linea = n->linea;
+
+        // collect parameter types for later use (e.g. type checking on calls)
+        for (const auto& p : n->params) {
+            if (auto* param = dynamic_cast<NodoParam*>(p.get()))
+                s.tipos_parametros.push_back(param->tipo);
+        }
+
         // declared on father scope
-        declarar({ n->nombre, Categoria::FUNCION, n->tipo_retorno,
-                   (int)pila_scopes.size() - 1 });
+        declarar(s);
 
         abrir_scope(); // own scope
 
         for (const auto& p : n->params) {
-            if (auto* param = dynamic_cast<NodoParam*>(p.get()))
-                declarar({ param->nombre, Categoria::PARAMETRO, param->tipo,
-                           (int)pila_scopes.size() - 1 });
+            if (auto* param = dynamic_cast<NodoParam*>(p.get())){
+                Simbolo sp;
+                sp.nombre = param->nombre;
+                sp.categoria = Categoria::PARAMETRO;
+                sp.tipo = param->tipo;
+                sp.scope_nivel = (int)pila_scopes.size() - 1;
+                sp.linea = param->linea;
+                declarar(sp); // declare parameters on own scope
+            }
         }
 
         visitar_bloque(n->cuerpo);
@@ -217,6 +260,14 @@ void imprimir_tabla() {
     }
 }
 
+// prints all collected semantic errors
+void imprimir_errores() {
+    for (const auto& e : errores_semanticos) {
+        fprintf(stderr, "semantic error: %s at line %d\n",
+                e.mensaje.c_str(), e.linea);
+    }
+}
+
 int main(void) {
     if (yyparse() != 0) {
         fprintf(stderr, "Error parsing the program.\n");
@@ -230,10 +281,17 @@ int main(void) {
     raiz->imprimir(0);
     visitar(raiz);
     imprimir_tabla();
+
+    if (!errores_semanticos.empty()) {
+        printf("\n");
+        imprimir_errores();
+        return 1;
+    }
+
     return 0;
 }
 
 void yyerror(const char* msg) {
     extern int yylineno;
-    fprintf(stderr, "error: %s in line %d\n", msg, yylineno);
+    reportar_error(msg, yylineno);
 }
