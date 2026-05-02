@@ -1,6 +1,10 @@
-# CartaCode: Syntactic Analyzer and AST Generator
+# CartaCode: Syntactic and Semantic Analyzer
 
 Implementation of the syntactic analyzer and AST generator for **CartaCode**, a general-purpose typed imperative programming language with a formal letter-inspired syntax. The language keywords are written in Spanish.
+
+The previous stage (Practice 6) built the syntactic analyzer and the AST generator using Flex and Bison. 
+
+This stage (Practice 7) extends that work with the semantic analysis phase: symbol table management with nested scopes, static verification (declaration of identifiers, uniqueness within a scope), type checking on expressions and statements, and implicit type promotion (`entero` to `flotante`) for mixed arithmetic operations.
 
 ## Language Overview
 
