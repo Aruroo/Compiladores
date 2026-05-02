@@ -14,6 +14,8 @@ enum class Tipo {
     LETRA,
     TEXTO,
     NADA,
+    BOOLEANO, 
+    ERROR,  // --> special type to represent a type error (used in type checking)
 };
 
 // Binary operators: +, -, *, /, %, ==, !=, <, <=, >, >=, &&, ||
@@ -38,6 +40,8 @@ inline std::string tipo_str(Tipo t) { // return the string representation of the
         case Tipo::LETRA: return "letra";
         case Tipo::TEXTO: return "texto";
         case Tipo::NADA: return "nada";
+        case Tipo::BOOLEANO: return "booleano";
+        case Tipo::ERROR: return "<error>";
     }
     return "?";
 }
@@ -65,9 +69,15 @@ inline std::string sangria(int nivel) { // return a string with 2 spaces per lev
     return std::string(nivel * 2, ' ');
 }
 
+// formats the trailing "[tipo X, linea N]" suffix used by every imprimir()
+inline std::string info_nodo(Tipo t, int linea) {
+    return " [tipo " + tipo_str(t) + ", linea " + std::to_string(linea) + "]\n";
+}
+
 // Base class for all AST nodes
 struct Nodo {
     int linea;
+    Tipo tipo_evaluado = Tipo::NADA; // filled during semantic analysis (type checking)
     virtual ~Nodo() = default;
     virtual void imprimir(int nivel = 0) const = 0;
 };
@@ -79,34 +89,34 @@ struct Nodo {
 struct NodoEntero : Nodo {
     int valor;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "ENTERO(" << valor << ") [linea " << linea << "]\n";
+    std::cout << sangria(nivel) << "ENTERO(" << valor << ")" << info_nodo(tipo_evaluado, linea);
     }
 };
 
 struct NodoFlotante : Nodo {
     double valor;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "FLOTANTE(" << valor << ") [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "FLOTANTE(" << valor << ")" << info_nodo(tipo_evaluado, linea);
     }
 };
 
 struct NodoLetra : Nodo {
     char valor;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "LETRA('" << valor << "') [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "LETRA('" << valor << "')" << info_nodo(tipo_evaluado, linea);
     }
 };
 
 struct NodoTexto : Nodo {
     std::string valor;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "TEXTO(\"" << valor << "\") [linea " << linea << "]\n";    }
+        std::cout << sangria(nivel) << "TEXTO(\"" << valor << "\")" << info_nodo(tipo_evaluado, linea);    }
 };
 
 struct NodoAlias : Nodo {
     std::string nombre;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "ALIAS(" << nombre << ") [linea " << linea << "]\n";    }
+        std::cout << sangria(nivel) << "ALIAS(" << nombre << ")" << info_nodo(tipo_evaluado, linea);    }
 };
 
 // Expression nodes
@@ -116,7 +126,7 @@ struct NodoBinop : Nodo { // aritmetic or logic
     NodoPtr izq;
     NodoPtr der;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "BINOP(" << op_str(op) << ") [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "BINOP(" << op_str(op) << ")" << info_nodo(tipo_evaluado, linea);
         if (izq) izq->imprimir(nivel + 1);
         if (der) der->imprimir(nivel + 1);
     }
@@ -127,7 +137,7 @@ struct NodoUnop : Nodo {
     NodoPtr hijo;
     void imprimir(int nivel) const override {
         std::string op_s = (op == OpUnaria::NEGACION) ? "-" : "!";
-        std::cout << sangria(nivel) << "UNOP(" << op_s << ") [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "UNOP(" << op_s << ")" << info_nodo(tipo_evaluado, linea);
         if (hijo) hijo->imprimir(nivel + 1);
     }
 };
@@ -136,7 +146,7 @@ struct NodoLlamada : Nodo {
     std::string nombre;
     std::vector<NodoPtr> args;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "LLAMADA(" << nombre << ") [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "LLAMADA(" << nombre << ")" << info_nodo(tipo_evaluado, linea);
         for (const auto &a : args) if (a) a->imprimir(nivel + 1);
     }
 };
@@ -146,7 +156,7 @@ struct NodoDecl : Nodo {
     std::string nombre;
     NodoPtr valor;          // nullptr si if not initialized
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "DECL(" << tipo_str(tipo) << " " << nombre << ") [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "DECL(" << tipo_str(tipo) << " " << nombre << ")" << info_nodo(tipo_evaluado, linea);
         if (valor) valor->imprimir(nivel + 1);
     }
 };
@@ -157,7 +167,7 @@ struct NodoAsignacion : Nodo {
     std::string nombre;
     NodoPtr valor;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "ASIGNACION(" << nombre << ") [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "ASIGNACION(" << nombre << ")" << info_nodo(tipo_evaluado, linea);
         if (valor) valor->imprimir(nivel + 1);
     }
 };
@@ -169,7 +179,7 @@ struct NodoCuando : Nodo {
     std::vector<NodoPtr> entonces;
     std::vector<NodoPtr> sino;      // empty if there's no "sino"
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "CUANDO [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "CUANDO" << info_nodo(tipo_evaluado, linea);
         std::cout << sangria(nivel + 1) << "CONDICION:\n";
         if (condicion) condicion->imprimir(nivel + 2);
         std::cout << sangria(nivel + 1) << "ENTONCES:\n";
@@ -185,7 +195,7 @@ struct NodoMientras : Nodo {
     NodoPtr condicion;
     std::vector<NodoPtr> cuerpo;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "MIENTRAS [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "MIENTRAS" << info_nodo(tipo_evaluado, linea);
         std::cout << sangria(nivel + 1) << "CONDICION:\n";
         if (condicion) condicion->imprimir(nivel + 2);
         std::cout << sangria(nivel + 1) << "CUERPO:\n";
@@ -196,7 +206,7 @@ struct NodoMientras : Nodo {
 struct NodoDevuelve : Nodo {
     NodoPtr valor;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "DEVUELVE [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "DEVUELVE" << info_nodo(tipo_evaluado, linea);
         if (valor) valor->imprimir(nivel + 1);
     }
 };
@@ -204,7 +214,7 @@ struct NodoDevuelve : Nodo {
 struct NodoMuestra : Nodo {
     NodoPtr valor;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "MUESTRA [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "MUESTRA" << info_nodo(tipo_evaluado, linea);
         if (valor) valor->imprimir(nivel + 1);
     }
 };
@@ -214,18 +224,18 @@ struct NodoMuestra : Nodo {
 struct NodoLee : Nodo {
     std::string nombre;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "LEE(" << nombre << ") [linea " << linea << "]\n";    }
+        std::cout << sangria(nivel) << "LEE(" << nombre << ")" << info_nodo(tipo_evaluado, linea);    }
 };
 
 struct NodoRompe : Nodo {
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "ROMPE [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "ROMPE" << info_nodo(tipo_evaluado, linea);
     }
 };
 
 struct NodoContinua : Nodo {
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "CONTINUA [linea " << linea << "]\n";    }
+        std::cout << sangria(nivel) << "CONTINUA" << info_nodo(tipo_evaluado, linea);    }
 };
 
 // Function and program nodes
@@ -234,7 +244,7 @@ struct NodoParam : Nodo {
     Tipo tipo;
     std::string nombre;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "PARAM(" << tipo_str(tipo) << " " << nombre << ") [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "PARAM(" << tipo_str(tipo) << " " << nombre << ")" << info_nodo(tipo_evaluado, linea);
     }
 };
 
@@ -244,7 +254,7 @@ struct NodoFuncion : Nodo {
     std::vector<NodoPtr> params;
     std::vector<NodoPtr> cuerpo;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "FUNCION(" << tipo_str(tipo_retorno) << " " << nombre << ") [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "FUNCION(" << tipo_str(tipo_retorno) << " " << nombre << ")" << info_nodo(tipo_evaluado, linea);
         if (!params.empty()) {
             std::cout << sangria(nivel + 1) << "PARAMS:\n";
             for (const auto &p : params) if (p) p->imprimir(nivel + 2);
@@ -259,7 +269,7 @@ struct NodoPrograma : Nodo {
     std::string firma; // alias after "atentamente,"
     std::vector<NodoPtr> parrafos;
     void imprimir(int nivel) const override {
-        std::cout << sangria(nivel) << "PROGRAMA [linea " << linea << "]\n";
+        std::cout << sangria(nivel) << "PROGRAMA" << info_nodo(tipo_evaluado, linea);
         std::cout << sangria(nivel + 1) << "destinatario: " << destinatario << "\n";
         std::cout << sangria(nivel + 1) << "firma: " << firma << "\n";
         std::cout << sangria(nivel + 1) << "PARRAFOS:\n";
