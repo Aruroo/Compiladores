@@ -4,7 +4,7 @@ A compiler for **CartaCode**, an imperative, statically typed programming langua
 
 The compiler is built with Flex, Bison and C++. It produces intermediate code for the FIS-25 virtual machine, with four optimization passes applied to the generated code: loop-invariant code motion, common subexpression elimination, dead code elimination, and temporary reuse.
 
-For the full language reference (types, syntax, examples), see [MANUAL.md](MANUAL.md) (English: [MANUAL.en.md](MANUAL.en.md)).
+For the full language reference (types, syntax, examples), see [MANUAL.md](MANUAL.md).
 
 ## Requirements
 
