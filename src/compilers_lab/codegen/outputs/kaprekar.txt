@@ -1,0 +1,89 @@
+VAR v0_n
+VAR v1_iteraciones
+VAR r0
+VAR r1
+VAR r2
+VAR v2_d0
+VAR v3_d1
+VAR v4_d2
+VAR v5_d3
+VAR v6_tmp
+VAR v7_mayor
+VAR v8_menor
+ASSIGN 3524 v0_n
+ASSIGN 0 v1_iteraciones
+LABEL L0
+NEQ v0_n 6174 r0
+NEQ v0_n 0 r1
+MUL r0 r1 r2
+IFFALSE r2 GOTO L1
+MOD v0_n 10 r2
+ASSIGN r2 v2_d0
+MOD v0_n 10 r2
+SUB v0_n r2 r1
+DIV r1 10 r2
+MOD r2 10 r1
+ASSIGN r1 v3_d1
+MOD v0_n 100 r1
+SUB v0_n r1 r2
+DIV r2 100 r1
+MOD r1 10 r2
+ASSIGN r2 v4_d2
+MOD v0_n 1000 r2
+SUB v0_n r2 r1
+DIV r1 1000 r2
+MOD r2 10 r1
+ASSIGN r1 v5_d3
+ASSIGN 0 v6_tmp
+GT v2_d0 v3_d1 r1
+IFFALSE r1 GOTO L2
+ASSIGN v2_d0 v6_tmp
+ASSIGN v3_d1 v2_d0
+ASSIGN v6_tmp v3_d1
+LABEL L2
+GT v4_d2 v5_d3 r1
+IFFALSE r1 GOTO L3
+ASSIGN v4_d2 v6_tmp
+ASSIGN v5_d3 v4_d2
+ASSIGN v6_tmp v5_d3
+LABEL L3
+GT v2_d0 v4_d2 r1
+IFFALSE r1 GOTO L4
+ASSIGN v2_d0 v6_tmp
+ASSIGN v4_d2 v2_d0
+ASSIGN v6_tmp v4_d2
+LABEL L4
+GT v3_d1 v5_d3 r1
+IFFALSE r1 GOTO L5
+ASSIGN v3_d1 v6_tmp
+ASSIGN v5_d3 v3_d1
+ASSIGN v6_tmp v5_d3
+LABEL L5
+GT v3_d1 v4_d2 r1
+IFFALSE r1 GOTO L6
+ASSIGN v3_d1 v6_tmp
+ASSIGN v4_d2 v3_d1
+ASSIGN v6_tmp v4_d2
+LABEL L6
+MUL v5_d3 1000 r1
+MUL v4_d2 100 r2
+ADD r1 r2 r0
+MUL v3_d1 10 r2
+ADD r0 r2 r1
+ADD r1 v2_d0 r2
+ASSIGN r2 v7_mayor
+MUL v2_d0 1000 r2
+MUL v3_d1 100 r1
+ADD r2 r1 r0
+MUL v4_d2 10 r1
+ADD r0 r1 r2
+ADD r2 v5_d3 r1
+ASSIGN r1 v8_menor
+SUB v7_mayor v8_menor r1
+ASSIGN r1 v0_n
+ADD v1_iteraciones 1 r1
+ASSIGN r1 v1_iteraciones
+GOTO L0
+LABEL L1
+PRINT "Iteraciones hasta 6174:"
+PRINT v1_iteraciones

@@ -1,0 +1,29 @@
+hola, nesimo_primo {
+    querido entero es_primo (entero num) {
+        cuando (num < 2) {
+            devuelve 0
+        }
+        entero d = 2
+        mientras (d * d <= num) {
+            cuando (num % d == 0) {
+                devuelve 0
+            }
+            d = d + 1
+        }
+        devuelve 1
+    }
+    entero objetivo = 10
+    entero contador = 0
+    entero candidato = 1
+    entero resultado = 0
+    mientras (contador < objetivo) {
+        candidato = candidato + 1
+        cuando (es_primo(candidato) == 1) {
+            contador = contador + 1
+            resultado = candidato
+        }
+    }
+    muestra("El n-esimo primo es:")
+    muestra(resultado)
+}
+atentamente, sofia

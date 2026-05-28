@@ -1,0 +1,8 @@
+hola, funciones {
+    querido entero sumar (entero a, entero b) {
+        devuelve a + b
+    }
+    entero resultado = sumar(3, 5)
+    muestra(resultado)
+}
+atentamente, jonathan

@@ -1,0 +1,29 @@
+hola, euclides_extendido {
+    entero a = 240
+    entero b = 46
+    entero viejo_r = a
+    entero r = b
+    entero viejo_s = 1
+    entero s = 0
+    entero viejo_t = 0
+    entero t = 1
+    mientras (r != 0) {
+        entero q = viejo_r / r
+        entero tmp = viejo_r - q * r
+        viejo_r = r
+        r = tmp
+        tmp = viejo_s - q * s
+        viejo_s = s
+        s = tmp
+        tmp = viejo_t - q * t
+        viejo_t = t
+        t = tmp
+    }
+    muestra("MCD:")
+    muestra(viejo_r)
+    muestra("Coeficiente x:")
+    muestra(viejo_s)
+    muestra("Coeficiente y:")
+    muestra(viejo_t)
+}
+atentamente, sofia

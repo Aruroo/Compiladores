@@ -1,0 +1,10 @@
+VAR v0_x
+VAR r0
+ASSIGN 10 v0_x
+GT v0_x 5 r0
+IFFALSE r0 GOTO L0
+PRINT "x es mayor que 5"
+GOTO L1
+LABEL L0
+PRINT "x es menor o igual a 5"
+LABEL L1

@@ -1,0 +1,50 @@
+VAR v0_a
+VAR v1_b
+VAR v2_viejo_r
+VAR v3_r
+VAR v4_viejo_s
+VAR v5_s
+VAR v6_viejo_t
+VAR v7_t
+VAR r0
+VAR r1
+VAR v8_q
+VAR v9_tmp
+ASSIGN 240 v0_a
+ASSIGN 46 v1_b
+ASSIGN v0_a v2_viejo_r
+ASSIGN v1_b v3_r
+ASSIGN 1 v4_viejo_s
+ASSIGN 0 v5_s
+ASSIGN 0 v6_viejo_t
+ASSIGN 1 v7_t
+LABEL L0
+NEQ v3_r 0 r0
+IFFALSE r0 GOTO L1
+MOD v2_viejo_r v3_r r0
+SUB v2_viejo_r r0 r1
+DIV r1 v3_r r0
+ASSIGN r0 v8_q
+MUL v8_q v3_r r0
+SUB v2_viejo_r r0 r1
+ASSIGN r1 v9_tmp
+ASSIGN v3_r v2_viejo_r
+ASSIGN v9_tmp v3_r
+MUL v8_q v5_s r1
+SUB v4_viejo_s r1 r0
+ASSIGN r0 v9_tmp
+ASSIGN v5_s v4_viejo_s
+ASSIGN v9_tmp v5_s
+MUL v8_q v7_t r0
+SUB v6_viejo_t r0 r1
+ASSIGN r1 v9_tmp
+ASSIGN v7_t v6_viejo_t
+ASSIGN v9_tmp v7_t
+GOTO L0
+LABEL L1
+PRINT "MCD:"
+PRINT v2_viejo_r
+PRINT "Coeficiente x:"
+PRINT v4_viejo_s
+PRINT "Coeficiente y:"
+PRINT v6_viejo_t

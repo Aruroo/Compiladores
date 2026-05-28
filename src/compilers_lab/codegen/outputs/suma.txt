@@ -1,0 +1,7 @@
+VAR v0_a
+VAR r0
+VAR v1_b
+ASSIGN 5 v0_a
+ADD v0_a 2.5 r0
+ASSIGN r0 v1_b
+PRINT v1_b
