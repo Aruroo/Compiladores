@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
 # Copy source files
 WORKDIR /app
 COPY src/ .
+RUN make && mkdir -p /outputs
 
 # Build
 RUN make

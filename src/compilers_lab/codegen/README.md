@@ -15,7 +15,7 @@ For the full language reference (types, syntax, examples), see [MANUAL.md](MANUA
 
 ```bash
 docker build -t carta .
-docker run -i carta < examples/valid/collatz.carta
+docker run -i -v $(pwd)/outputs:/outputs carta < examples/tournament/collatz.carta
 ```
 
 ## Build and run locally
@@ -23,7 +23,7 @@ docker run -i carta < examples/valid/collatz.carta
 ```bash
 cd src
 make clean && make
-./carta ../examples/valid/collatz.carta
+./carta ../examples/tournament/collatz.carta
 ```
 
 The generated intermediate code is written to `outputs/collatz.txt`, ready to run on the FIS-25 virtual machine.
