@@ -1,6 +1,10 @@
 hola, euclides_extendido {
-    entero a = 240
-    entero b = 46
+    entero a
+    entero b
+    muestra("Ingresa a:")
+    lee(a)
+    muestra("Ingresa b:")
+    lee(b)
     entero viejo_r = a
     entero r = b
     entero viejo_s = 1

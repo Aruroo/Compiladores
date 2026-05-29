@@ -1,7 +1,7 @@
 VAR v0_semilla
-VAR v1_rango
-VAR v2_dentro
-VAR v3_total
+VAR v1_total
+VAR v2_rango
+VAR v3_dentro
 VAR v4_i
 VAR t12
 VAR r0
@@ -10,41 +10,43 @@ VAR v5_x
 VAR v6_y
 VAR r2
 VAR v7_pi
-ASSIGN 12345 v0_semilla
-ASSIGN 1000 v1_rango
-ASSIGN 0 v2_dentro
-ASSIGN 100000 v3_total
+PRINT "Ingresa semilla:"
+INPUT v0_semilla
+PRINT "Ingresa total de puntos:"
+INPUT v1_total
+ASSIGN 1000 v2_rango
+ASSIGN 0 v3_dentro
 ASSIGN 0 v4_i
-MUL v1_rango v1_rango t12
+MUL v2_rango v2_rango t12
 LABEL L0
-LT v4_i v3_total r0
+LT v4_i v1_total r0
 IFFALSE r0 GOTO L1
 MUL 75 v0_semilla r0
 ADD r0 74 r1
 MOD r1 65537 r0
 ASSIGN r0 v0_semilla
-MOD v0_semilla v1_rango r0
+MOD v0_semilla v2_rango r0
 ASSIGN r0 v5_x
 MUL 75 v0_semilla r0
 ADD r0 74 r1
 MOD r1 65537 r0
 ASSIGN r0 v0_semilla
-MOD v0_semilla v1_rango r0
+MOD v0_semilla v2_rango r0
 ASSIGN r0 v6_y
 MUL v5_x v5_x r0
 MUL v6_y v6_y r1
 ADD r0 r1 r2
 LTE r2 t12 r1
 IFFALSE r1 GOTO L2
-ADD v2_dentro 1 r1
-ASSIGN r1 v2_dentro
+ADD v3_dentro 1 r1
+ASSIGN r1 v3_dentro
 LABEL L2
 ADD v4_i 1 r1
 ASSIGN r1 v4_i
 GOTO L0
 LABEL L1
-MUL 4.0 v2_dentro r1
-DIV r1 v3_total r2
+MUL 4.0 v3_dentro r1
+DIV r1 v1_total r2
 ASSIGN r2 v7_pi
 PRINT "Aproximacion de Pi (Monte Carlo):"
 PRINT v7_pi

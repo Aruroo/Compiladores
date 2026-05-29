@@ -34,7 +34,8 @@ ASSIGN 1 __ret
 RETURN
 RETURN
 LABEL __main
-ASSIGN 10 v2_objetivo
+PRINT "Ingresa n:"
+INPUT v2_objetivo
 ASSIGN 0 v3_contador
 ASSIGN 1 v4_candidato
 ASSIGN 0 v5_resultado

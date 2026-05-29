@@ -1,8 +1,12 @@
 hola, montecarlo_pi {
-    entero semilla = 12345
+    entero semilla
+    entero total
+    muestra("Ingresa semilla:")
+    lee(semilla)
+    muestra("Ingresa total de puntos:")
+    lee(total)
     entero rango = 1000
     entero dentro = 0
-    entero total = 100000
     entero i = 0
     mientras (i < total) {
         semilla = (75 * semilla + 74) % 65537

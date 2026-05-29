@@ -10,8 +10,10 @@ VAR r0
 VAR r1
 VAR v8_q
 VAR v9_tmp
-ASSIGN 240 v0_a
-ASSIGN 46 v1_b
+PRINT "Ingresa a:"
+INPUT v0_a
+PRINT "Ingresa b:"
+INPUT v1_b
 ASSIGN v0_a v2_viejo_r
 ASSIGN v1_b v3_r
 ASSIGN 1 v4_viejo_s
