@@ -1,0 +1,31 @@
+VAR v1_n
+VAR v2_auxiliar
+VAR v3_resultado
+VAR r0
+VAR __ret
+VAR v0_n
+GOTO __main
+LABEL f_factorial
+PARAM_GET v1_n
+ASSIGN v1_n v2_auxiliar
+ASSIGN 1 v3_resultado
+LABEL L0
+GT v2_auxiliar 1 r0
+IFFALSE r0 GOTO L1
+MUL v3_resultado v2_auxiliar r0
+ASSIGN r0 v3_resultado
+SUB v2_auxiliar 1 r0
+ASSIGN r0 v2_auxiliar
+GOTO L0
+LABEL L1
+ASSIGN v3_resultado __ret
+RETURN
+RETURN
+LABEL __main
+PRINT "Ingresa n"
+ASSIGN 0 v0_n
+INPUT v0_n
+PARAM v0_n
+GOSUB f_factorial
+ASSIGN __ret r0
+PRINT r0

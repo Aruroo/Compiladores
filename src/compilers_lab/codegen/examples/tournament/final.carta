@@ -1,0 +1,16 @@
+hola, algoritmo{
+    muestra("Ingresa n")
+    entero n = 0
+    lee(n)
+    querido entero factorial(entero n){
+        entero auxiliar = n
+        entero resultado = 1
+        mientras(auxiliar > 1){
+            resultado = resultado * auxiliar
+            auxiliar = auxiliar - 1
+        }
+        devuelve resultado 
+    }
+    muestra(factorial(n))
+}
+atentamente, jonathan
