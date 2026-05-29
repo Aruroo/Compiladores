@@ -2,7 +2,8 @@ VAR v0_n
 VAR v1_pasos
 VAR r0
 VAR r1
-ASSIGN 27 v0_n
+PRINT "Ingresa n:"
+INPUT v0_n
 ASSIGN 0 v1_pasos
 LABEL L0
 NEQ v0_n 1 r0
@@ -24,5 +25,5 @@ ADD v1_pasos 1 r0
 ASSIGN r0 v1_pasos
 GOTO L0
 LABEL L1
-PRINT "Pasos de Collatz para 27:"
+PRINT "Pasos de Collatz:"
 PRINT v1_pasos

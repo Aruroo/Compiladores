@@ -12,7 +12,9 @@ hola, nesimo_primo {
         }
         devuelve 1
     }
-    entero objetivo = 10
+    entero objetivo
+    muestra("Ingresa n:")
+    lee(objetivo)
     entero contador = 0
     entero candidato = 1
     entero resultado = 0

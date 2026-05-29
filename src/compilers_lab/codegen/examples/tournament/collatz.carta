@@ -1,5 +1,7 @@
 hola, collatz {
-    entero n = 27
+    entero n
+    muestra("Ingresa n:")
+    lee(n)
     entero pasos = 0
     mientras (n != 1) {
         cuando (n % 2 == 0) {
@@ -9,7 +11,7 @@ hola, collatz {
         }
         pasos = pasos + 1
     }
-    muestra("Pasos de Collatz para 27:")
+    muestra("Pasos de Collatz:")
     muestra(pasos)
 }
 atentamente, sofia

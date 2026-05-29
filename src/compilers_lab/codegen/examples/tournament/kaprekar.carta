@@ -1,5 +1,7 @@
 hola, rutina_kaprekar {
-    entero n = 3524
+    entero n
+    muestra("Ingresa n (4 digitos):")
+    lee(n)
     entero iteraciones = 0
     mientras (n != 6174 && n != 0) {
         entero d0 = n % 10
