@@ -1,0 +1,58 @@
+VAR v0_num
+VAR r0
+VAR __ret
+VAR v1_d
+VAR r1
+VAR v2_objetivo
+VAR v3_contador
+VAR v4_candidato
+VAR v5_resultado
+GOTO __main
+LABEL f_es_primo
+PARAM_GET v0_num
+LT v0_num 2 r0
+IFFALSE r0 GOTO L0
+ASSIGN 0 __ret
+RETURN
+LABEL L0
+ASSIGN 2 v1_d
+LABEL L1
+MUL v1_d v1_d r0
+LTE r0 v0_num r1
+IFFALSE r1 GOTO L2
+MOD v0_num v1_d r1
+EQ r1 0 r0
+IFFALSE r0 GOTO L3
+ASSIGN 0 __ret
+RETURN
+LABEL L3
+ADD v1_d 1 r0
+ASSIGN r0 v1_d
+GOTO L1
+LABEL L2
+ASSIGN 1 __ret
+RETURN
+RETURN
+LABEL __main
+ASSIGN 10 v2_objetivo
+ASSIGN 0 v3_contador
+ASSIGN 1 v4_candidato
+ASSIGN 0 v5_resultado
+LABEL L4
+LT v3_contador v2_objetivo r0
+IFFALSE r0 GOTO L5
+ADD v4_candidato 1 r0
+ASSIGN r0 v4_candidato
+PARAM v4_candidato
+GOSUB f_es_primo
+ASSIGN __ret r0
+EQ r0 1 r1
+IFFALSE r1 GOTO L6
+ADD v3_contador 1 r1
+ASSIGN r1 v3_contador
+ASSIGN v4_candidato v5_resultado
+LABEL L6
+GOTO L4
+LABEL L5
+PRINT "El n-esimo primo es:"
+PRINT v5_resultado

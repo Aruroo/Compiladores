@@ -1,0 +1,7 @@
+hola, errorSemantico2 {
+    entero a = 5
+    entero a = 10
+    muestra(b)
+    c = 3
+}
+atentamente, sofia

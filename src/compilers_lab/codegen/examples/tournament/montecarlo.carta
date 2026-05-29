@@ -1,0 +1,21 @@
+hola, montecarlo_pi {
+    entero semilla = 12345
+    entero rango = 1000
+    entero dentro = 0
+    entero total = 100000
+    entero i = 0
+    mientras (i < total) {
+        semilla = (75 * semilla + 74) % 65537
+        entero x = semilla % rango
+        semilla = (75 * semilla + 74) % 65537
+        entero y = semilla % rango
+        cuando (x * x + y * y <= rango * rango) {
+            dentro = dentro + 1
+        }
+        i = i + 1
+    }
+    flotante pi = 4.0 * dentro / total
+    muestra("Aproximacion de Pi (Monte Carlo):")
+    muestra(pi)
+}
+atentamente, sofia

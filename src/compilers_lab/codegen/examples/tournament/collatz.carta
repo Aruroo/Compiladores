@@ -1,0 +1,15 @@
+hola, collatz {
+    entero n = 27
+    entero pasos = 0
+    mientras (n != 1) {
+        cuando (n % 2 == 0) {
+            n = n / 2
+        } sino {
+            n = 3 * n + 1
+        }
+        pasos = pasos + 1
+    }
+    muestra("Pasos de Collatz para 27:")
+    muestra(pasos)
+}
+atentamente, sofia

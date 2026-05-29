@@ -1,0 +1,28 @@
+VAR v0_n
+VAR v1_pasos
+VAR r0
+VAR r1
+ASSIGN 27 v0_n
+ASSIGN 0 v1_pasos
+LABEL L0
+NEQ v0_n 1 r0
+IFFALSE r0 GOTO L1
+MOD v0_n 2 r0
+EQ r0 0 r1
+IFFALSE r1 GOTO L2
+MOD v0_n 2 r1
+SUB v0_n r1 r0
+DIV r0 2 r1
+ASSIGN r1 v0_n
+GOTO L3
+LABEL L2
+MUL 3 v0_n r1
+ADD r1 1 r0
+ASSIGN r0 v0_n
+LABEL L3
+ADD v1_pasos 1 r0
+ASSIGN r0 v1_pasos
+GOTO L0
+LABEL L1
+PRINT "Pasos de Collatz para 27:"
+PRINT v1_pasos

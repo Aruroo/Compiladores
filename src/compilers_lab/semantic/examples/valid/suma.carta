@@ -1,0 +1,6 @@
+hola, suma {
+    entero a = 5
+    flotante b = a + 2.5
+    muestra(b)
+}
+atentamente, sofia
